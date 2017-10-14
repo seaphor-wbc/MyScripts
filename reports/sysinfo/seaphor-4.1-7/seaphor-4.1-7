@@ -1,0 +1,1116 @@
+#!/bin/bash
+###################################################################################
+#####	GNU/GPL Info
+###################################################################################
+echo "
+####c4#############################################################################
+###										###
+##			GNU/GPL info 						###
+##		SysInfo ver. 4.1-5						###
+##	Released under GPL v2.0, See www.gnu.org for full license info		###
+##	Copyright (C) 2006  Shawn Miller					###
+##  This program is free software; you can redistribute it and/or modify	###
+##    it under the terms of the GNU General Public License as published by	###
+##    the Free Software Foundation; either version 2 of the License, or		###
+##    (at your option) any later version.					###
+##										###
+##    This program is distributed in the hope that it will be useful,		###
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of		###
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		###
+##    GNU General Public License for more details.				###
+##										###
+##	Script Originally GPL licenced as version 1.0-1, November, 2006		###
+##	First used and modified for HP in version 2.5-0 in 2010			###
+##	Name modified and fully used for HP in version 3.0 in 2011		###
+##	Officially given to SUSE as hp-sysinfo version 3.0 in 2011		###
+##	Officially given to HP as hp-sysinfo version 3.0 in 2011		###
+##		Maintained Original version as seaphor				###
+##										###
+###################################################################################"
+sleep 6
+#####################################################################################
+#####	Constants
+#####################################################################################
+	SCRIPT_VERSION=C-4_4.1-07
+	SYSINFO_VERSION=4.1-07
+	SYS_VER_REL_DATE="28-May-2017"
+	MOTR="Thank You for using my hardware and system information gathering script.\n\tEnjoy! and hope you find it useful\n\t\tC4\n"
+	PROGNAME=$(basename $0)
+	HOST=`hostname -s`
+        VERSION="4.1"
+	TDATE=`date +%y%m%d-%H.%M.%S`
+	SUSE=false
+	UBUNTU=false
+	REDHAT=false
+	VERBOSE=true
+	RELVER=false
+	RELEASE="$SCRIPT_VERSION $SYS_VER_REL_DATE"
+	PARTIAL=false
+	HELP=false
+	OPTIONS="Options-Usage:
+	\nHelp		\t\t[-h]	\tShows this list
+	\nVerbose	\t[-v]	\tNo pauses at info outputs and removes some output
+	\nPartial	\t[-p]	\tOnly creates the summary text file/s- .txt and .rtf
+	\nRelease	\t[-s]	\tOnly prints the Script Release Version and date
+	"
+#####################################################################################
+#####	Setting Options
+#####################################################################################
+if test "x$1" = "x-s"; then
+	RELVER=true
+fi
+if $RELVER; then
+	echo -e $PROGNAME
+	echo -e $RELEASE
+	exit $?
+fi
+if test "x$1" = "x-h"; then
+	HELP=true
+fi
+
+if $HELP; then
+	echo -e $OPTIONS
+	exit $?
+fi
+
+if test "x$1" = "x-v"; then
+	VERBOSE=false
+fi
+
+sleep()
+{
+	if $VERBOSE; then
+		command sleep "$@"
+	fi
+}
+
+if test "x$1" = "x-p"; then
+	PARTIAL=true
+fi
+echo -e $OPTIONS
+sleep 4
+echo -e "\n\tThis script is the creation of S.Miller, Released under GPL v2.0,
+Please cat this script and read the full GPL, and my notes, 
+change-logs, and contributors. Please submit any further requests, additions, 
+subtractions, and/or suggestions to:
+#####              shawn@woodbeeco.com "
+sleep 6
+###################################################################################
+#####	Disclaimer and contributors
+###################################################################################
+#$VERBOSE && echo -e "\n
+#####  This is for personal and business use, and as of release 3.0 to 4.0-1, was
+#####  offered to the HP-Linux team, The SUSE team, and the Canonical team,
+#####	 and That was given as hp-sysinfo to HP-Linux team, and SUSE. 
+#####	First HP revision release date 15 Sept 2011.
+#####	I named it back to the original name and from the Release-Date of 4.1-0, 
+#####	will no longer maitain the HP script, I will only develop my own original
+#####	script from there on. 
+#####  Contributors to this script: 
+#####	Developers at SUSE, and
+#####  Chris Gagnon, from Canonical.
+#####	Chris Franks aka shunter, loomsen, John Skovran aka nykkto, Kat, 
+#####  Milton Brown, Zubair, with requests form Robert Lemaire on behalf of of SUSE
+sleep 3
+###################################################################################
+#####	Script description
+###################################################################################
+$VERBOSE && echo -e "\n\tThis script is for SUSE, RedHat, and Debian systems,
+to gather a system-wide arrangement of hardware and software 
+information to speed up the process of determining root-cause
+of specific problems. It also produces a 'quick-refference' to 
+the most common querries and captures them in a .txt file, a 
+.rtf file (for the windows users to view) and tars them all up 
+for easier distribution."
+sleep 6
+###################################################################################
+#####	Setting Distribution
+###################################################################################
+if [ -a /etc/ImageVersion ]; then
+	SUSE=true
+	echo -e "\nThis Distribution is SUSE\n"
+	sleep 3
+fi
+if [ -a /etc/SuSE-release ]; then
+	SUSE=true
+	echo -e "\nThis Distribution is SUSE\n"
+	sleep 3
+fi
+if [ -a /etc/buildstamp ]; then
+	UBUNTU=true
+	echo "Debian"
+	sleep 3
+fi
+if [ -a /etc/redhat-release ]; then
+	REDHAT=true
+	echo "RedHat"
+	sleep 3
+fi
+###################################################################################
+#####	Setting Variables
+###################################################################################
+##	Need to set all variables **************
+###	Graphics Variables-
+###		AMD Graphics Variable is VGFXA  
+###		Intel Graphics Variable is VGFXI
+###		Nvidia Graphics Variable is VGFXN
+###		VGFX is either -Switchable or Non-Switchable-
+###	WLAN- Variables
+###		Broadcom is WLANBCM
+###		Atheros is WLANATH
+###		Intel is WLANINT
+###	End of variables needed
+####
+##	Setting Graphics Variables--
+####
+if [ "`lspci -nnk | grep -i vga | grep 'ATI'`" != "" ]; then
+	export VGFXA="amd"
+	if [ ! -a /root/atisysteminfo-report.txt ]; then
+		if [ -a /usr/sbin/atigetsysteminfo.sh ]; then
+			atigetsysteminfo.sh 2> /dev/null
+		fi
+	fi
+fi
+if [ "`lspci -nnk | grep -i vga | grep 'Intel'`" != "" ]; then
+	export VGFXI="intel"
+fi
+if [ "`lspci -nnk | grep -i vga | grep -i nvidia`" != "" ]; then
+	export VGFXN="nvidia"
+fi
+if [ "$VGFXA" == "amd" ]; then
+	if [ "$VGFXI" == "intel" ]; then
+		export VGFX="Switchable-Graphics"
+	fi
+else
+	export VGFX="Non-Switchable-Graphics"
+fi
+##	Setting WLAN Variables--
+if [ "`lspci -nnk | grep -i network | grep -i 'Ather'`" != "" ]; then
+	export WLANA="Atheros"
+fi
+if [ "`lspci -nnk | grep -i network | grep -i 'Intel'`" != "" ]; then
+	export WLANA="Intel"
+fi
+if [ "`lspci -nnk | grep -i network | grep -i 'Broadcom'`" != "" ]; then
+	export WLANA="Broadcom"
+fi
+if [ "`lspci -nnk | grep -i 'network' | grep -i 'broadcom'`" == "" ]; then
+	if [ "`lspci -nnk | grep -i 'network' | grep -i 'atheros'`" == "" ]; then
+		if [ "`lspci -nnk | grep -i 'network' | grep -i 'intel'`" == "" ]; then
+			export WLANA="Non-Standard"
+		fi
+	fi
+fi
+if [ "`lspci -nnk |grep 'Network controller'`" == "Broadcom" ]; then
+	WLAN="bcm"
+fi
+if [ "`lspci -nnk |grep 'Network controller'`" == "Intel" ]; then
+	WLAN="intel"
+fi
+if [ "`lspci -nnk |grep 'Network controller'`" == "Atheros" ]; then
+	WLAN="ath"
+fi
+###############################################################################################################
+##---------------------------------------------------------------------------
+#	Removing this section
+#####	Checking ProtoType Name (2011 and 2012 platforms only- Remove this section if NOT a Pre-Load System)
+##---------------------------------------------------------------------------
+###############################################################################################################
+####
+###################################################################################
+#####	Setting Variable for Directory and file parameters
+###################################################################################
+##
+## FIXME:Where do you want to place the file?
+	HWINFO=$PWD/$HOST.rtf
+##
+###################################################################################
+#####	Checking for prior script run and creating directories, setting perms
+###################################################################################
+if [ -a $PWD/$HOST-*-files ]; then
+	mkdir original-sysinfo
+	mv $HOST-* original-sysinfo/.
+	mkdir $HOST-post
+	cd $HOST-post
+fi
+#
+if [ -a $PWD/$HOST-*-post ]; then
+	cd $HOST-*-post
+       	mkdir prior-sysinfo
+       	mv $HOST* prior-sysinfo/.
+       	mv prior-sysinfo $HOST-prior-sysinfo
+       	mkdir $HOST-post
+	cd $HOST-post
+fi
+##### Initialization And Setup #####
+#
+###################################################################################
+#####	Beginning Run Script
+###################################################################################
+#
+###################################################################################
+#####	Checking for root, setting error exit
+###################################################################################
+echo -e "\n#############################################################"
+echo -e "\n\tYou MUST be root to run this script, checking now..."
+echo -e "\n#############################################################"
+sleep 2
+function error_exit
+{
+	echo "${PROGNAME}: ${1:-"you are not root, please run as root"}" >&2
+	exit 1
+}
+###
+[[ "$UID" == "0" ]] && : || error_exit
+#
+# Set file creation mask so that all files are created with 666 permissions.
+umask 000
+#
+###################################################################################
+#####	Main Logic
+###################################################################################
+##	Beginning File Creation
+mkdir $HOST-files
+chmod -R 4777 $HOST-files
+echo -e "\n
+###################################################################################
+#####	Gathering logs, generating components lists, etc.
+###################################################################################"
+##	Beginning PARTIAL	##
+if ! $PARTIAL; then
+###################################################################################
+###	- Gathering Distro/Non-Distro logs
+###################################################################################
+##	All Distro Commands-
+	lspci -nnk >> $HOST-files/lspci-kernel.log
+	dmesg >> $HOST-files/dmesg.txt
+	cp /var/log/Xorg.0.log $HOST-files/Xorg0log.txt 2> /dev/null
+	lsusb -v > $HOST-files/lsusb-v.txt
+	dmidecode > $HOST-files/dmidecode.log
+	cp /etc/X11/xorg.* $HOST-files/ 2> /dev/null
+	xrandr -q > $HOST-files/xrandrq.log 2> /dev/null
+##	Non-Distro Specific
+	lspci -nnm >> lspci-HWID-ALL.log.ids
+	if [ "`lspci -nnm | grep -i vga | grep ATI`" != "" ]; then
+		echo -e "\tAMD/ATI 4-Part IDs..." > lspci-HWID-core.txt.ids
+		lspci -nnm | grep -i vga >> lspci-HWID-core.txt.ids
+	else
+		echo -e "\tGraphics 4-Part IDs..." >> lspci-HWID-core.txt.ids
+		lspci -nnm | grep -i vga >> lspci-HWID-core.txt.ids
+	fi
+#
+	echo -e "\tWireless" >> lspci-HWID-core.txt.ids
+	grep -i 'Network controller' lspci-HWID-ALL.log.ids >> lspci-HWID-core.txt.ids
+	echo -e "\n\tWired" >> lspci-HWID-core.txt.ids
+	grep -i 'Ethernet controller' lspci-HWID-ALL.log.ids >> lspci-HWID-core.txt.ids
+#	
+	mv lspci-HWID-ALL.log.ids lspci-HWID-ALL.txt
+	if [ -a $HOST-*-files ]; then
+		if [ ! -a $HOST-*-files/$HOST-HWIDs ]; then
+			mkdir $HOST-*-files/$HOST-HWIDs
+		fi
+		mv lspci-HWID-core.txt.ids $HOST-*-files/$HOST-HWIDs/.
+		mv lspci-HWID-ALL.txt $HOST-*-files/$HOST-HWIDs/.
+		chmod -R 777 $HOST-*-files
+	else
+		if [ -a $HOST-HWIDs ]; then
+			mv lspci-HWID-core.txt.ids $HOST-HWIDs/lspci-HWID.txt
+			mv lspci-HWID-ALL.txt $HOST-HWIDs/.
+			chmod -R 777 $HOST-*
+		else
+			mkdir $HOST-HWIDs
+			mv lspci-HWID-core.txt.ids $HOST-HWIDs/lspci-HWID.txt
+			mv lspci-HWID-ALL.txt $HOST-HWIDs/.
+			chmod -R 777 $HOST-*
+		fi
+#
+	fi
+##	Distro Specific
+	if $SUSE; then
+		rpm -qa --last > $HOST-files/rpmqalast.txt
+		chmod -R 777 $HOST-files
+		cp /var/log/zypp/history $HOST-files/zypper-history.txt
+		if [[ -x /usr/sbin/acpidump ]]; then
+			acpidump > $HOST-files/acpidump.dat
+		fi
+	fi
+##	Red Hat
+	if $REDHAT; then
+		rpm -qa --last > $HOST-files/rpmqalast.txt
+		chmod -R 777 $HOST-files
+		if [[ -x /usr/sbin/acpidump ]]; then
+			acpidump > $HOST-files/acpidump.dat
+		fi
+	fi
+##	Ubuntu
+	if $UBUNTU; then
+		dpkg --list > $HOST-files/debsqalast.txt	
+		grep -i networkmanager /var/log/syslog > $HOST-files/NetworkManager.txt
+		cp /var/log/syslog $HOST-files/VLM.txt
+		cat /var/log/dpkg.log | grep "\ install\ " | sort -n > $HOST-files/install-history.txt
+	fi
+###################################################################################
+#####	Errors
+###################################################################################
+	dmesg | grep -i error > $HOST-files/ERRdmesg.txt
+	dmesg | grep -i warn > $HOST-files/WARNdmesg.txt
+#####################################################################################
+#####	- END-OF Gathering Distro/Non-Disto logs
+#####################################################################################
+#
+##	Confirming Permissions 
+	chmod -R 4777 $HOST-files
+##	Ending ! PARTIAL	##
+fi
+#
+#####################################################################################
+#####	Setting Synaptics file
+#####################################################################################
+if $SUSE; then
+	if [ -a /opt/Synaptics/bin/syncontrol ]; then
+		/opt/Synaptics/bin/syncontrol diag 2> /dev/null
+	fi
+fi
+echo -e "\n
+#####################################################################################
+#####	Generating Main Sysinfo logs and text file/s
+#####################################################################################
+"
+echo ""	
+#echo "############################################################" #RQI-01
+echo "############################################################" #RQH-01
+echo -e "\tFile-name of script: $PROGNAME" > $HWINFO
+echo -e "\n\tScript-Version: $SYSINFO_VERSION" >> $HWINFO
+echo -e "\tScript-Version Release Date: $SYS_VER_REL_DATE" >> $HWINFO
+echo -e "\n\tDate and Time---" >> $HWINFO
+echo $TDATE >> $HWINFO
+echo -e "\n\tFile-name/s of main System Information: $HOST.txt and $HOST.rtf for winusers " >> $HWINFO
+#echo "#.C4.####################*      *######################.C4.#" #RQI-02
+echo "#.C4.##################################################.C4.#" #RQH-02
+#####################################################################################
+#####	Checking BIOS and System Information
+#####################################################################################
+echo -e "\n\tMain System Information" >> $HWINFO
+#echo -e "\tProduct is-" >> $HWINFO
+dmidecode -s system-product-name >> $HWINFO
+# Find this variable and delete it- echo -e "\n\tPrototype-Codename is... $CODEN " >> $HWINFO
+dmidecode -s system-manufacturer >> $HWINFO
+dmidecode -s system-version >> $HWINFO
+dmidecode -s system-serial-number >> $HWINFO
+dmidecode -s system-uuid >> $HWINFO
+echo -e "\n\tBios Version is-" >> $HWINFO
+dmidecode -s bios-version >> $HWINFO
+if $SUSE; then
+	hwinfo --bios | grep "System Info:" -A 5 | grep -i serial >> $HWINFO
+fi
+#echo "#####################*               *######################" #RQI-03
+echo "##########******************************####################" #RQH-03
+#echo "################*         *######*        *#################" #RQI-04
+echo "########*                                *##################" #RQH-04
+##
+#echo "##############*       *###############*       *#############" #RQI-05
+echo "######*       @######################|   *##################" #RQH-05
+##
+echo -e '\n\tuname -a output' >> $HWINFO
+if [ "`uname -a`" == "" ]; then
+	echo 'no output' >> $HWINFO
+else
+	uname -a >> $HWINFO
+fi
+#echo "#############*      *####################*     *############" #RQI-06
+echo "#####*     @#########################|    *#################" #RQH-06
+#####################################################################################
+#####	Checking Image Version/Release 
+#####################################################################################
+echo -e "\n\tDistro and Image Version" >> $HWINFO
+if $UBUNTU; then
+	echo -e "\tUbuntu Image Release" >> $HWINFO
+		if [ -a /etc/buildstamp ]; then
+			cat /etc/buildstamp >> $HWINFO
+		fi
+	lsb_release -a 2>/dev/null >> $HWINFO
+fi
+#echo "############*      *######## ###############*  *############" #RQI-07
+echo "####*     @##########################|_____    *############" #RQH-07
+if $SUSE; then
+	echo -e "\tSUSE Image Release" >> $HWINFO
+	if [ -a /etc/SuSE-release ]; then
+		cat /etc/SuSE-release >> $HWINFO
+	fi
+	if [ -a /etc/ImageVersion ]; then
+		cat /etc/ImageVersion >> $HWINFO
+	fi
+	echo "" >> $HWINFO
+fi
+if $REDHAT; then
+	echo -e "\tRedHat Image Release" >> $HWINFO
+	if [ -a /etc/redhat-release ]; then
+		cat /etc/redhat-release >> $HWINFO
+	fi
+fi
+##
+#echo "###########*      *#########   ###############*#############" #RQI-08
+echo "###*     @#####|                     |#####|    *###########" #RQH-08
+#####################################################################################
+#####	Checking CPU
+#####################################################################################
+echo -e "\n\tProcessor" >> $HWINFO
+dmidecode -s processor-version >> $HWINFO
+if $SUSE; then
+	if [ "`hwinfo --cpu |grep Model`" == "" ]; then
+		echo 'no output' >> $HWINFO
+	else
+		hwinfo --cpu |grep Model >> $HWINFO
+	fi
+fi
+#echo "##########*      *##########      ##########################" #RQI-09
+echo "###*     @#####|                     |#####|    *###########" #RQH-09
+#####################################################################################
+#####	Checking Memory
+#####################################################################################
+echo -e "\n\tMemory" >> $HWINFO
+if $SUSE; then
+	if [ "`hwinfo --memory |grep 'Memory Size:'`" == "" ]; then
+		echo 'no output' >> $HWINFO
+	else
+		hwinfo --memory |grep 'Memory Size:' >> $HWINFO
+	fi
+fi
+dmidecode --type 17 | grep -i size >> $HWINFO
+#echo "##########*      *##########      ##########################" #RQI-10
+echo "###*     @#####|      OFFICIAL       |#####|    *###########" #RQH-10
+#####################################################################################
+#####	Checking Video/Graphics Properties	Need to remove all Switchable Gfx
+#####################################################################################
+echo -e "\n\tVideo Card is..." >> $HWINFO
+if ! $SUSE; then
+	lspci -nnk | grep -i vga -A 2 >> $HWINFO
+	echo -e "\n\tThis list will be limited, this section was mainly
+		Created for the SUSE Distribution, which has detailed Graphics driver
+		Information- For NON-SUSE distros ONLY the Kernel driver will be displayed " >> $HWINFO
+	echo -e "\n\t-- if you wish to contribute and supply the same command/output for your distro, please contact me" >> $HWINFO
+	if [ "$VGFX" == "Switchable-Graphics" ]; then
+		if $VGFXA; then
+			echo -e "Your Graphics Card Is- $VGFXA" >> $HWINFO
+			echo -e "\tAMD Graphics" >> $HWINFO
+			lspci -nnk | grep -i vga -A 2 | grep -i kernel >> $HWINFO
+			if [ -a /root/atisysteminfo-report.txt ]; then
+				grep -i "linux driver release ident" /root/atisysteminfo-report.txt -A 1 | head -n 2 >> $HWINFO
+			fi
+		fi
+		if $VGFXN; then
+			echo -e "Your Graphics Card Is- $VGFXN" >> $HWINFO
+			echo -e "\tNVidia Graphics" >> $HWINFO
+			lspci -nnk | grep -i vga -A 2 | grep -i kernel >> $HWINFO
+		fi
+		if $VGFXI; then
+			echo -e "Your Graphics Card Is- $VGFXI" >> $HWINFO
+			echo -e "\tIntel Graphics" >> $HWINFO
+			lspci -nnk | grep -i vga -A 2 | grep -i kernel >> $HWINFO
+		fi
+	else
+		lspci -nnk | grep -i vga -A 2 | grep -i kernel >> $HWINFO
+		if [ -a /root/atisysteminfo-report.txt ]; then
+			grep -i "linux driver release ident" /root/atisysteminfo-report.txt -A 1 | head -n 2 >> $HWINFO
+		fi
+	fi
+fi
+#echo "##########*      *##########      ##########################" #RQI-11
+echo "###*     @#####|     $SCRIPT_VERSION      |#####|    *###########" #RQH-11
+if $SUSE; then
+	if [ "$VGFX" == "Switchable-Graphics" ]; then
+		echo -e "Your Graphics Card Is- $VGFX" >> $HWINFO
+		echo -e "\tAMD and Intel Graphics" >> $HWINFO
+		lspci -nnk | grep -i vga -A 2 >> $HWINFO
+		if [ "`hwinfo --gfxcard |grep Model`" == "" ]; then
+			echo 'no output' >> $HWINFO
+		else
+			hwinfo --gfxcard |grep Model >> $HWINFO
+		fi
+		if [ -a $HOST-files/rpmqalast.txt ]; then
+			echo $VGFX >> $HWINFO
+			echo -e "\tAMD rpm version-" >> $HWINFO
+			grep fglrx $HOST-files/rpmqalast.txt >> $HWINFO
+			echo -e "\tAMD Driver Version-" >> $HWINFO
+			if [ -a /root/atisysteminfo-report.txt ]; then
+				grep -i "linux driver release ident" /root/atisysteminfo-report.txt -A 1 | head -n 2 >> $HWINFO
+			fi
+			hwinfo --gfxcard |grep Driver: >> $HWINFO
+			echo -e "\n\tIntel GFX Driver Version-" >> $HWINFO
+			grep -i "xorg-x11-driver-video" $HOST-files/rpmqalast.txt >> $HWINFO
+		fi
+	else
+		echo -e "Your Graphics Card Is- $VGFX" >> $HWINFO
+		lspci -nnk | grep -i vga -A 2 >> $HWINFO
+		if [ "`hwinfo --gfxcard |grep Model`" == "" ]; then
+			echo 'no output' >> $HWINFO
+		else
+			hwinfo --gfxcard |grep Model >> $HWINFO
+		fi
+		if [ -a $HOST-files/rpmqalast.txt ]; then
+			if [ "$VGFXA" == "amd" ]; then
+				echo -e "\tAMD rpm version-" >> $HWINFO
+				grep fglrx $HOST-files/rpmqalast.txt >> $HWINFO
+				echo -e "\tAMD Driver Version-" >> $HWINFO
+				if [ -a /root/atisysteminfo-report.txt ]; then
+					grep -i "linux driver release ident" /root/atisysteminfo-report.txt -A 1 | head -n 2 >> $HWINFO
+				fi
+				hwinfo --gfxcard |grep 'Driver:' >> $HWINFO
+			fi
+			if [ "$VGFXI" == "intel" ]; then
+				echo -e "\tIntel GFX Driver Version-" >> $HWINFO
+				grep -i "xorg-x11-driver-video" $HOST-files/rpmqalast.txt >> $HWINFO
+			fi
+			if [ "$VGFXN" == "nvidia" ]; then
+				echo -e "\tNVidia GFX Driver Version-" >> $HWINFO
+				hwinfo --gfxcard | grep 'Driver:' | grep 'is active' -A2 >> $HWINFO
+				rpm -qa | grep nvidia >> $HWINFO
+			fi
+		fi
+	fi
+fi
+#echo "##########*      *##########      ##########################" #RQI-12
+echo "###*     @#####|      RELEASE        |#####|    *###########" #RQH-12
+if $UBUNTU; then
+	echo -e "\tDriver Version DEB" >> $HWINFO 
+	if [ "`dpkg --list | grep fglrx`" != "" ]; then
+		dpkg --list | grep fglrx >> $HWINFO
+	else
+		if [ "`dpkg --list | grep nvidia`" != "" ]; then
+			dpkg --list | grep nvidia >> $HWINFO
+		else
+			if [ "`dpkg --list | grep radeon`" != "" ]; then
+				dpkg --list | grep radeon >> $HWINFO
+			else
+				echo "No fglrx, radeon, or nvidia packages installed" >> $HWINFO
+			fi
+		fi
+	fi
+fi
+#echo "###########*      *#########      *#########################" #RQI-13
+echo "###*     @#####|                     |#####|_______   *#####" #RQH-13
+#####################################################################################
+#####	Checking Networking Properties
+#####################################################################################
+##	WLAN
+echo -e "\n\tWireless LAN-- (Only Atheros, Broadcom, and Intel are filtered at this time)" >> $HWINFO
+if [ "$WLANA" == "Non-Standard" ]; then
+	echo -e "WLAN card is not Broadcom, Intel, or Atheros- Not reporting status or driverversion!" >> $HWINFO
+	lspci -nnk | grep "Network controller" -A 2 >> $HWINFO
+else
+	echo -e "\tWireless LAN card is $WLANA" >> $HWINFO
+	lspci -nnk | grep "Network controller" -A 2 >> $HWINFO
+	if $SUSE; then
+		hwinfo --wlan | grep -i Driver: >> $HWINFO
+		hwinfo --netcard |grep 'Model:' | grep -i wlan >> $HWINFO
+		if [ "$WLANA" == "Atheros" ]; then
+			rpm -qa | grep -i 'compat-w' >> $HWINFO
+		fi
+		if [ "$WLANA" == "Broadcom" ]; then
+			rpm -qa | grep -i 'broadcom' >> $HWINFO
+		fi
+	else
+#echo "############*      *########      *#############**##########" #RQI-14
+echo "###*     @#####|_____________________|#####|_______    *####" #RQH-14
+		if $UBUNTU; then
+			if [ "`lshw -C Network |grep 'Model:'`" == "" ]; then
+				echo 'no output' >> $HWINFO
+			else
+				lshw -C Network |grep 'Model:' | grep -i wlan >> $HWINFO
+			fi
+			lspci -nnk | grep "Network controller" -A 2 >> $HWINFO
+		fi
+		lspci -nnk | grep "Network controller" -A 2 >> $HWINFO
+	fi
+fi
+#echo "#############*      *#######      *#########*    ###########" #RQI-15
+echo "###*      @########################################|   *####" #RQH-15
+#
+echo -e "\n\tNetworking - Wired LAN" >> $HWINFO
+if [ "`lspci -nnk |grep "Ethernet controller"`" == "" ]; then
+	echo 'no output' >> $HWINFO
+else
+	lspci -nnk |grep "Ethernet controller" -A 2 >> $HWINFO
+	if $SUSE; then
+		hwinfo --netcard |grep 'Model:' | grep -i pci >> $HWINFO
+	fi
+fi
+#echo "##############*       *#####      *#####*      *############" #RQI-16
+echo "####*      @#######################################|   *####" #RQH-16
+#####################################################################################
+#####	Checking Audio Properties
+#####################################################################################
+echo -e "\n\tAudio" >> $HWINFO
+if $SUSE; then
+	if [ "`hwinfo --sound | grep 'Model:'`" != "" ]; then
+		hwinfo --sound |grep 'Model:' >> $HWINFO
+	fi
+fi
+lspci -nnk | grep -i audio -A 2 | grep -i kernel >> $HWINFO
+#echo "################*        ***      ***        *##############" #RQI-17
+echo "#####*       @#####################################|   *####" #RQH-17
+####################################################################################
+#####	Removing Checking Modem
+####################################################################################
+#
+#echo "###################*                       *################" #RQI-18
+echo "######*                              |#####|           *####" #RQH-18
+##################################################################################
+#####	Removing Checking Bluetooth
+##################################################################################
+#echo "##  _____ #############*               *####################" #RQI-19
+echo "################################*    |#####|    *###########" #RQH-19
+##################################################################################
+#####	Removing Checking Webcam
+##################################################################################
+#echo "#  / ____|_ ################      *#########################" #RQI-20
+echo "################################*    |#####|    *###########" #RQH-20
+##################################################################################
+#####	Checking Optical Drive
+##################################################################################
+echo -e "\n\tCD/DVD-Rom Drive" >> $HWINFO
+wodim -prcap 2>/dev/null | grep "Device seems to be" >> $HWINFO
+if $SUSE; then
+	if [ "`hwinfo --cdrom |grep Features`" == "" ]; then
+		echo 'no info available' >> $HWINFO
+	else
+		hwinfo --cdrom |grep Features >> $HWINFO
+	fi
+fi
+#echo "# | |    | | ###############      *#########################" #RQI-21
+echo "################################*    |#####|    *###########" #RQH-21
+##################################################################################
+#####	Removing Synaptics Touchpad
+##################################################################################
+#echo "# | |____| |_ ##############*      *########################" #RQI-22
+echo "################################*    |#####|    *###########" #RQH-22
+##################################################################################
+#####	Checking Hard Drive
+##################################################################################
+echo -e "\n\tHard Drive" >> $HWINFO
+#	df -ah >> $HWINFO
+	df -hl | grep -v tmpfs >> $HWINFO
+#echo "#  \_____   _| #############*      *########################" #RQI-23
+echo "################################*    |#####|    *###########" #RQH-23
+##################################################################################
+#####	Repos
+##################################################################################
+echo -e "\n\tRepositories Enabled" >> $HWINFO
+if $UBUNTU; then
+	cat /etc/apt/sources.list >> $HWINFO
+	for PPA in $(ls /etc/apt/sources.list.d); do cat /etc/apt/sources.list.d/"$PPA" >> $HWINFO; done  
+fi
+if $SUSE; then
+	zypper lr >> $HWINFO
+fi
+if $REDHAT; then
+	yum repolist >> $HWINFO
+fi
+#
+#echo "##       |_|  ###############*      *#######################" #RQI-24
+echo "################################*    |#####|    *###########" #RQH-24
+##################################################################################
+#####	Finishishin run script, Cleaning Up
+##################################################################################
+chmod 777 $HWINFO
+cp $HWINFO SysInfo-$HOST-$TDATE.txt
+#echo "########     ################*      *#######################" #RQI-25
+echo "################################*_______________*###########" #RQH-25
+cp $HWINFO $HOST-files/$HOST-$TDATE.txt
+cp $HWINFO $HOST-files/$HOST-$TDATE.rtf
+#echo "#.C4.#########################**       ################.C4.#" #RQI-26
+echo "#.C4.##################################################.C4.#" #RQH-26
+if [ -a $HOST-HWIDs ]; then
+	mv $HOST-HWIDs $HOST-files/.
+fi
+##	Beginning PARTIAL	##
+if ! $PARTIAL; then
+	if [ -a /root/atisysteminfo-report.txt ]; then
+		cp /root/atisysteminfo-report.txt $HOST-files/.
+	fi
+fi
+##	ENDING ! PARTIAL	##
+#echo "############################################################" #RQI-27
+echo "############################################################" #RQH-27
+#
+echo -e "\nContents List of Gathered logs and files in the folder and tar-file"
+ls $HOST-files > $HOST-files/contents.txt #&& less $HOST-files/contents.txt
+for i in `cat $HOST-files/contents.txt`; do echo -e "\t$i"; sleep .5 ; done
+#
+	if [[ "`pwd | grep 'home'`" != "" ]]; then
+		MYOWNER=`pwd | awk -F/ '{print $3}'`
+		chown -R $MYOWNER: $HOST-files
+		chown $MYOWNER: Sys*.txt
+	else
+		chmod 777 $HOST-files/*.*
+		chmod -R 4777 $HOST-files
+	fi
+##################################################################################
+#####	
+##################################################################################
+##	BEGINNING ! PARTIAL		##
+if ! $PARTIAL; then
+	ls $HOST-files > $HOST-files/contents.txt #&& less $HOST-files/contents.txt
+	tar -czf $HOST-$TDATE-files.tar.gz $HOST-files 
+	if [[ "`echo $MYOWNER`" != "" ]]; then
+		chown $MYOWNER: *.tar.gz
+	fi
+	rm $HWINFO
+fi
+##	ENDING ! PARTIAL	##
+##	Beginning PARTIAL
+if $PARTIAL; then
+	tar -czf $HOST-$TDATE-files.tar.gz $HOST-files
+	if [[ "`echo $MYOWNER`" != "" ]]; then
+		chown $MYOWNER: *.tar.gz
+	fi
+	rm $HWINFO
+fi
+##	Ending PARTIAL
+mv $HOST-files $HOST-$TDATE-files
+if [ $PWD == $HOST-postrun-sysinfo ]; then
+	cd ..
+	mv $HOST-postrun-sysinfo $HOST-postrun-$TDATE
+fi
+echo -e "\n\t---------------------------------------------------------------
+"
+echo -e $MOTR
+exit $?
+###
+##################################################################################
+#####	END OF SCRIPT !!!!
+##################################################################################
+#####################################################################################
+#####	Release History
+#####################################################################################
+###
+##########		First Release- version 1.0	
+##########	Date-	July 2006	(Ubuntu Only)
+##########		First Revision- version 1.2-0
+##########	Date-	May 2007	(Ubuntu Only)
+##########		Major edit release- changed support to SUSE (some RH)
+##########	Date March 2008		Release version 2.0-1
+###			From 08 to 11, Many on the fly additions, and corrections
+###		All SUSE From here to version 4.0
+###
+##########		Release version 3.0-9 (edit released as 3.1)		##########
+##########	Date edit begin:	15 Sept, 2011
+##########	Date edit Released:	16 Nov, 2011
+###
+##########		Release version 3.1 (Final)		##########
+##########	Date edit begin:	16 Nov, 2011
+##########	Date edit Released:	Nov, 2011
+##########		Release version 3.1-1		##########
+##########	Date edit begin:	1 Dec, 2011
+##########	Date edit Released:	12 Dec, 2011
+###
+##########		Release version 3.1-2		##########
+##########	Date edit begin:	17 Dec, 2011
+##########	Date edit Released:	22 Dec, 2011
+###"
+#     --------------------------------------------------------------------
+#####	Version Info
+#     --------------------------------------------------------------------
+#$VERBOSE echo -e "\n
+#####################################################################################
+#####	Change-Logs
+#####################################################################################"
+##########     Requested additions from v.2.5     ##########
+##########     Changes from v.2.5- v.2.6
+##  Added ntpdate to the first cmd
+##  Added rpm -qa -last
+##  Added log output of the -last to rpmqalast.txt to the output directory
+##  Added Script-Version Number to the output
+###
+##########     Requested additions from v.2.6     ##########
+##########     Changes from v.2.6- v.2.7
+##  Added zypper lr
+##  Added Date/TimeStamp
+##  Added 'Serial' output to BIOS info
+##  Check for System Registration
+##  Fixed some line varriables in the script(\n\t<lines>
+###
+##########     Requested additions from v.2.7     ##########
+##########     Changes from v.2.7- 2.8 (Never Released)
+##  Changed 's2ram' to 's2ram -i'
+##  Changed permissions to output files/directories
+##  Added echos for GPL info, change-logs, and other notes
+##  Added check for GM Image/OEM-Preload Image
+##  Added check for Synaptics driver id GM Image
+##  Added check for alsa-info script
+###
+##########     Requested additions from v.2.8     ##########
+##########     Changes from v.2.8- 3.0
+##########	2.8 was NOT released so check changes from 2.7 to 3.0 ######
+##  Major changes requires Version change
+##  Many changes to be more compatible with CERT/GM Images
+##  Added better compatibility between OEM-Preload and GM images
+##  Added 'zypper-history.txt to the captured logs/files at Richard's Request
+##  Added check for prior run of script, added 'postrun-sysinfo' dir if-so
+#	If this script has been run before, in the same directory, It will 
+#	create a directory named <hostname><date>-sysinfo and move the 
+#	existing files/directories into that directory, it will then create
+#	a new directory named <hostname><date>post, then cd into that 
+#	directory where it will then create the new files and capture the 
+#	latest logs and generate all as the first time with date/timestamps.
+#	Added Progress hash/Signature and took out -less- 
+#	Changed the time/date-stamp layout
+#	Added --no-dialog to the alsa-info command for NO user action required
+###
+##########     Requested additions from v.3.0-5     ##########
+##########     Changes from v.3.0-5- 3.0-6
+##	Added <lspci -nnk | grep (param) -A 2>  to lspci to provide loaded
+##	kernel module/driver in use 
+##	Added <lspci -nnk > lspci-kernel.log> to the gathered logs/files
+##	Added */usr/share/ati/fglrx-install.log installation log
+##	Added *contents.txt* to gathered files, list of files
+###
+##########     Changes from v.3.0-6 - 3.0-7
+##	General clean-up and remove blank lines
+##	Changed main text-file name to add time/date-stamp
+##	Add HW-IDs for Ivy/Sandy-Bridge and output name to the file
+##	for quick Identification.
+##	Added /boot/grub/menu.lst to the captured files
+###
+##########     Changes from v.3.0-7 - 3.0-8 - 3.0-9
+##	Adding AMD build-version/date
+##	Added Graphics PCI-IDs
+##	Added GFX checks for the script-hash
+##	Added Graphics Name/Label to the Main text file (not complete)
+##	Made variables for the Gfx PCI-IDs-to-Names (not complete)
+##	Added check for Switchable-Graphics
+##	Added WLAN PCI-IDs
+##	Added WLAN Name/Label to the Main text file (not complete)
+##	Added GFX checks for the script-hash
+##	Made variables for the WLAN PCI-IDs-to-Names (not complete)
+##	Added Nvidia PCI-IDs (some)
+##	Added model=code-name/prototype-name (2011-2012 only)
+##	Removed (commented) check for swap partition -82- (fixed)
+##
+##########	Marked Final as 3.1
+##########	Changes to 3.1-1
+##	Fixed s2ram output
+##	SUSE added a VERBOSE option
+##
+###########################################################################################
+###											###
+##########		Changes from 3.1-1 to 3.1-2					###
+##		Add a PARTIAL Option, (-p) ONLY creates the summary text file/s		###
+##		Add HELP option, (-h) and OPTIONS variable and a usage table		###
+##		Add Release-Date variable and added that output to the text 		###
+##			file/s- Sript-Version Release Date: HPSIS_VER_REL_DATE		###
+###											###
+###########################################################################################
+###########################################################################################
+###											###
+###			Changes from 3.1-2 to 3.1-3					###
+##		Fixed (work-around) for the WLAN/BT-Combo Cards Bluetooth NOT		###
+##		Detected in hwinfo or lsusb, I added the Device/SubDeviceID.		###
+###											###
+###########################################################################################
+###########################################################################################
+###											###
+###			Changes from 3.1-3 to 3.1-4					###
+##		Add a HW-ID Option, (-i) ONLY creates a text file of a list of		###
+##		4-pard Hardware IDs. And Modem ID For the CERT-Team :-)			###
+###											###
+###########################################################################################
+###########################################################################################
+###											###
+###			Changes from 3.1-4 to 3.1-5					###
+##		Added acpidump.dat and dmidecode.log to the gathered logs		###
+###											###
+##			Changes from 3.1-5 to 3.1-6					###
+##		Minor fixes to main-file removal, and general clean-up			###
+###		Fixed some Modem detection issues					###
+###											###
+##			Changes from 3.1-6 to 3.1-7					###
+##		Fork for Ubuntu- Added MOTR (Message Of The Release)			###
+##			Name Change to hpc-sysinfo					###
+##			Changed HOST=hostname						###
+###											###
+##			Change from 3.1-7 to 3.1-8					###
+##		added CD/DVD, CPU, bluetooth(usb only) and webcam(usb only) detection	###
+###											###
+##			Change from 3.1-8 to 3.1-9					###
+##		added to CD/DVD- grep for features					###
+##											###
+##			Change from 3.1-9 to 3.2-0					###
+##		Chris G. added Webcam detection "Video Streaming"			###
+###########################################################################################
+###########################################################################################
+##											###
+##			Change from 3.2.0 to 3.2-1					###
+##		Added Labels to Bios/System info from dmidecode				###
+##			Removed variables for wlan and gfx cards			###
+##		Created Distro detection and set variable for SUSE and Debian		###
+##		Edited EACH section and declared 'if' variables for Distros		###
+##		Completed the compatibility for Debian and Red-Hat systems		###
+##			RELEASED as seaphor-4.0-0
+##											###
+###########################################################################################
+###########################################################################################
+##											###
+##			RELEASED as seaphor-4.0-0					###
+##	Upon release of 4.0 with multi-distro support I changed the name		###
+##		back to its original name in 2007.					###
+##											###
+##			Change from 4.0-0 to 4.0-1					###
+##		Added log of output of xrandr -q to files				###
+##		Cleaned up common some code						###
+##											###
+###########################################################################################
+###########################################################################################
+##											###
+##			Change from 4.0-1 to 4.0-2					###
+## 											###
+##		Removed the less output at the end					###
+##		Added tar to the -p option as well					###
+##		Cleaned up sme common code for the -p and -i options			###
+##											###
+###########################################################################################
+###########################################################################################
+##											###
+##			Change from 4.0-2 to 4.0-3					###
+## 											###
+##		Found issue that the *working* file is not removed when finished	###
+##					FIXED!						###
+##											###
+##			Change from 4.0-3 to 4.0-4					###
+##											###
+##		Moved the <shebang> to the top of the script :)				###
+##		AMD changed the location of their -atigetsysteminfo.sh script		###
+##		I Amended 4.0-4 to RE-ENABLE querying the contents and gathering	###
+##		That log and the info it reports, ie- driver build-date			###
+##											###
+###########################################################################################
+###########################################################################################
+##											###
+##			Change from 4.0-4 to 4.0-5					###
+##											###
+##		Because of AMD's naming-convention, I have had to modify the 		###
+##		query for the driver version. EXAMPLE: the 8.951.8 will report		###
+##		<DriverName> as 8.953, which adds confusion when their next release 	###
+##		is named 8.953. So I modified the call as such:				###
+## grep -i 'linux driver release ident' /root/atisysteminfo-report.txt -A 2 | head -n 2	###
+##											###
+##		Fixed Bluetooth report output for SUSE systems				###
+##											###
+###########################################################################################
+###########################################################################################
+##											###
+##			Change from 4.0-5 to 4.0-6					###
+##											###
+##		Show GPL	lesson the # of changelogs shown			###
+##		Added ID for Synaptics Touchpad for SUSE-Only				###
+##		Added y/n to view the Main text file					###
+##		Changed *df -h* to *df -ah*						### 
+##											###
+###########################################################################################
+###########################################################################################
+##                                                                                      ###
+##                      Change from 4.0-6 to 4.0-7                                      ###
+##                                                                                      ###
+##		Added -s Option- Only prints the Script Release Version and date	###
+##		Fixed the PARTIAL not reporting the AMD build date and version		###
+##		  By setting an AMD variable outside of the !-PARTIAL environment	###
+##                                                                                      ###
+###########################################################################################
+###########################################################################################
+##                                                                                      ###
+##                      Change from 4.0-7 to 4.0-8                                      ###
+##			4.0-8- MARKED- FINAL!!! This is the LAST version for HP		###
+##			I will NO Longer maintain, support, or update this script	###
+##			Changing the name for HP to hp-sysinfo				###
+##											###
+##		Added -Graphics and WLAN Driver Versions- to the list for verification	###
+##		Set Variables for graphics and for WLAN					###
+##		Fixed the variables for AMD/Intel and Switchable Graphics		###
+##		Cleaned up some final code						###
+##											###
+###########################################################################################
+#echo -e "\n
+###########################################################################################
+##                                                                                      ###
+##                      Change from 4.0-7 to 4.0-8                                      ###
+##			4.0-8- MARKED- FINAL!!! This is the LAST version for HP		###
+##			I will NO Longer maintain, support, or update this script	###
+##			Changing the name for HP to hp-sysinfo				###
+##											###
+###########################################################################################"
+###########################################################################################
+##                                                                                      ###
+##		Added -Graphics and WLAN Driver Versions- to the list for verification	###
+##		Set Variables for graphics and for WLAN					###
+##		Fixed the variables for AMD/Intel and Switchable Graphics		###
+##		Cleaned up some final code						###
+##											###
+##			Change from 4.0-8 to 4.0-9					###
+##		Changed the HWID function to be a constant, but left the option to	###
+##		Just get the 4-part IDs with the -i option. Also- included the ~ALL~	###
+##		4-part HWID text file instead of removing it, and included the HWID 	###
+##		Directory in the generated zip file.					###
+##											###
+##			Change from 4.0-9 to 4.1.0					###
+##		Made the changes in 4.0-9 to be NON-SUSE-Specific... will be applied	###
+##		to RedHat and Ubuntu as well						###
+##											###
+###########################################################################################
+###########################################################################################
+##                                                                                      ###
+##			Known Issues:	(to be fixed in 4.1-2)				###
+##		Line # 671 -	Need space between -2>- and -/dev/null-	FIXED in 4.1-1	###
+##		Added echo of the Options				FIXED in 4.1-1	###
+##		Reversed the VERBOSE option				FIXED in 4.1-1	###
+##											###
+##			Changes from 4.1-1 to 4.1-2					###
+##		Removed the dmesg and vlm errors and warnings from the main 		###
+##		text file/s, and now create their own text file in the 			###
+##		zipped directory.							###
+##		Cleaned up the GFX & WLAN code and added comment of SUSE-Distro 	###
+##		compliance, and need for code to do same for other distros		###
+##		Fixing Synaptics Touchpad check...					###
+##											###
+##			Changes from 4.1-2 to rewrite					###
+##		Remove HWID as a Separate set						###
+##		Remove HP prototype list						###
+##		Move all Variables to the beginning					###
+##		Move Audio info below Networking to use more for GFX and WLAN		###
+##											###
+##			Fixed from 4.1-3 to 4.1-4					###
+##		Registration for non-suse						###
+##		Wired LAN in non-suse							###
+##		Removed all added HP							###
+##		Moved ERRORS to log-gathering section					###
+##		Changed ZIP to TAR							###
+##		Removed empty and/or un-needed lines, uniformed the interior 		###
+##		documentation.								###
+##		Removed Setting NTP, NON-Invasive script- DO NOT Install ANYTHING!	###
+##											###
+###########################################################################################
+####C4#####################################################################################
+##                                                                                      ###
+##			Changes from 4.1-4 to 4.1-5					###
+##		Final Fork- hp-sysinfo and seaphor- BOTH final, and GPL/(C)		###
+##		RePlaced the HP prototype list for hp-sysinfo				###
+##		Move all Variables to the beginning					###
+##		Wireless LAN in fixed							###
+##		Replaced all added HP to hp-sysinfo					###
+##		Removed empty and/or un-needed lines, uniformed the interior 		###
+##		documentation. Completed the GPL with HP info fo hp-sysinfo		###
+##		Set script history in GPL						###
+##											###
+###########################################################################################
+####C4#####################################################################################
+##                                                                                      ###
+##			Changes from 4.1-5 to 4.1-7					###
+##		Replaced new debug hash with old one with the version info		###
+##		Removed HP prototype list for hp-sysinfo				###
+##		Removed s2ram calls							###
+##		Removed Audio checks							###
+##		Replaced all variable quotes 						###
+##		Removed empty and/or un-needed lines, uniformed the documentation	###
+##		Replaced the df -ah with df -hl to cleanup output			###
+##		Removed 'less' statements to cleanup output				###
+##											###
+###########################################################################################
