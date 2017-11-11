@@ -24,7 +24,7 @@
 #
 	DOMAIN="Need to complete this with your info"
 	VALUE="Need to complete this with your info"
-	OPTIONS="\n\tUsage-\n${CYAN}This script's main purpose is to scan a single host and report What Groups are allowed to log in via ssh, and then discover What users are in those Groups, and then Discover those users' Real Names. The Secondary use for this script is to discover Either a single User's real name [-i] OR a single User's username based based on the user's Real last name [-n]. You will need to edit this script and change your local Infrastructure's values for Domain, Environment/s, and authentication to the Domain Controller/s.${NC}\n\n\tsyntax =\n   command Name [last-name|uid|${CYAN}file${NC}] UID|Real -[i|n] Environment -[p|s|u] ['Optional hostname']\n[-i]\tUID\t\tUser ID- username\n[-n]\tLast Name\tUser's last name\n[-p]\tEnvironment\tProduction\n[-s]\tEnvironment\tSandbox\n[-u]\tEnvironment\tNon-Prod\n\tExample\t${PURPLE}sh allowedusers.sh smiller -i -p${NC}\n\t\t${PURPLE}sh allowedusers.sh miller -n -p${NC}\n\tUsing the ${CYAN}'file'${NC} option instead of 'user'\n\tREQUIREs a hostname to be scanned like so-\n\t\t ${PURPLE}sh allowedusers.sh${NC} ${CYAN}file${NC} ${PURPLE}-i -p${NC} ${CYAN}<hostname>${NC}\n"
+	OPTIONS="\n\tUsage-\n${CYAN}This script's main purpose is to scan a single host and report What Groups are allowed to log in via ssh, and then discover What users are in those Groups, and then Discover those users' Real Names. The Secondary use for this script is to discover Either a single User's real name [-i] OR a single User's username based based on the user's Real last name [-n].${NC}\n${RED} You will need to edit this script and change your local Infrastructure's values for Domain, Environment/s, and authentication to the Domain Controller/s.${NC}\n\n\tsyntax =\n   command Name [last-name|uid|${CYAN}file${NC}] UID|Real -[i|n] Environment -[p|s|u] ['Optional hostname']\n[-i]\tUID\t\tUser ID- username\n[-n]\tLast Name\tUser's last name\n[-p]\tEnvironment\tProduction\n[-s]\tEnvironment\tSandbox\n[-u]\tEnvironment\tNon-Prod\n\tExample\t${PURPLE}sh allowedusers.sh smiller -i -p${NC}\n\t\t${PURPLE}sh allowedusers.sh miller -n -p${NC}\n\tUsing the ${CYAN}'file'${NC} option instead of 'user'\n\tREQUIREs a hostname to be scanned like so-\n\t\t ${PURPLE}sh allowedusers.sh${NC} ${CYAN}file${NC} ${PURPLE}-i -p${NC} ${CYAN}<hostname>${NC}\n"
 if [ "`echo $1`" == "" ]; then
         echo -e $OPTIONS | less
 	exit 0
@@ -60,7 +60,7 @@ if [[ "`echo $1`" != "file" ]]; then
 else
   ssh $4 grep AllowG /etc/ssh/sshd_config | sed -e 's/\ /\n/g' > allowedgroups.txt
   for i in `cat allowedgroups.txt`; do echo -e "\n$i" >> group-mems.txt; getent group $i >> group-mems.txt; done
-  echo -e "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n" >> group-mems.txt
+  echo -e "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n" >> group-mems.txt
   cat group-mems.txt | awk -F: '{print $4}' | sed -e 's/,/\n/g' | sed '/^\s*$/d' >> memlist.txt
   for n in `cat memlist.txt`; do echo -e "\n$n" >> group-mems.txt ; ldapsearch -h $ENV -D "cn=VALUE,ou=accounts,o=DOMAIN" -w VALUE -LLL "($NMA=$n)" cn fullname | grep fullname >> group-mems.txt ; done
 fi
