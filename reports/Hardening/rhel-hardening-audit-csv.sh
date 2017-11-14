@@ -741,7 +741,7 @@ else
 	fi
 fi
 grep "restrict -6 default" /etc/ntp.conf > tmp2.txt
-if [ "`cat tmp.txt`" == "" ]; then
+if [ "`cat tmp2.txt`" == "" ]; then
 	PASSF="Fail"
 else
 	if [ "`grep 'restrict -6 default kod nomodify notrap nopeer noquery'tmp2.txt`" == "" ]; then

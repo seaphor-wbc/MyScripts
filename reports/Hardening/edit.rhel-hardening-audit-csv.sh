@@ -745,7 +745,7 @@ else
 	fi
 fi
 grep "restrict -6 default" /etc/ntp.conf > $HRDTMPB
-if [ "`cat $HRDTMPA`" == "" ]; then
+if [ "`cat $HRDTMPB`" == "" ]; then
 	PASSF="Fail"
 else
 	if [ "`grep 'restrict -6 default kod nomodify notrap nopeer noquery'$HRDTMPB`" == "" ]; then
