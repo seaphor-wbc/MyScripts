@@ -57,9 +57,10 @@ case "$3" in
 esac
 if [[ "`echo $1`" != "file" ]]; then
   ldapsearch -h $ENV -D "cn=VALUE,ou=accounts,o=DOMAIN" -w VALUE -LLL "($NMA=$1)" cn fullname
+  exit $?
 else
   ssh $4 grep AllowG /etc/ssh/sshd_config | sed -e 's/\ /\n/g' > allowedgroups.txt
-  for i in `cat allowedgroups.txt`; do echo -e "\n$i" >> group-mems.txt; getent group $i >> group-mems.txt; done
+  for i in `cat allowedgroups.txt`; do echo -e "\n$i" >> group-mems.txt; ssh $4 getent group $i >> group-mems.txt; done
   echo -e "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n" >> group-mems.txt
   cat group-mems.txt | awk -F: '{print $4}' | sed -e 's/,/\n/g' | sed '/^\s*$/d' >> memlist.txt
   for n in `cat memlist.txt`; do echo -e "\n$n" >> group-mems.txt ; ldapsearch -h $ENV -D "cn=VALUE,ou=accounts,o=DOMAIN" -w VALUE -LLL "($NMA=$n)" cn fullname | grep fullname >> group-mems.txt ; done
