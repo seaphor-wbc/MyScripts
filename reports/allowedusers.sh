@@ -1,5 +1,6 @@
 #! /bin/bash
 ###
+# # Edit all values in '<xxx>' greater/less-than
 #!/bin/bash
 ### Colors ###################
 	RED='\e[0;31m'
