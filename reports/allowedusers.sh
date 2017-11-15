@@ -1,7 +1,6 @@
 #! /bin/bash
 ###
 # # Edit all values in '<xxx>' greater/less-than
-#!/bin/bash
 ##############################
 ##	Example Usage
 #
@@ -12,6 +11,12 @@
 if [ "`echo $1`" == "" ]; then
         echo -e $OPTIONS
 	exit 0
+fi
+if [[ "`echo $1`" == "file" ]]; then
+  if [[ "`echo $4`" == "" ]]; then
+    echo -e "\n$(tput setaf 1)\tUsing the$(tput sgr 0) $(tput setaf 6)'file'$(tput sgr 0)$(tput setaf 1) option instead of 'user'\n\tREQUIREs a hostname to be scanned like so-$(tput sgr 0)\n\t\t $(tput setaf 5)sh allowedusers.sh$(tput sgr 0) $(tput setaf 6)file$(tput sgr 0) $(tput setaf 5)-i -p$(tput sgr 0) $(tput setaf 6)<hostname>$(tput sgr 0)\n"
+    exit 0
+  fi
 fi
 case "$2" in
 "-n")
