@@ -2,32 +2,15 @@
 ###
 # # Edit all values in '<xxx>' greater/less-than
 #!/bin/bash
-### Colors ###################
-	RED='\e[0;31m'
-	LTRED='\e[1;31m'
-	BLUE='\e[0;34m'
-	LTBLUE='\e[1;34m'
-	GREEN='\e[0;32m'
-	LTGREEN='\e[1;32m'
-	ORANGE='\e[0;33m'
-	YELLOW='\e[1;33m'
-	CYAN='\e[0;36m'
-	LTCYAN='\e[1;36m'
-	PURPLE='\e[0;35m'
-	LTPURPLE='\e[1;35m'
-	GRAY='\e[1;30m'
-	LTGRAY='\e[0;37m'
-	WHITE='\e[1;37m'
-	NC='\e[0m'
 ##############################
 ##	Example Usage
-#	printf "${LTCYAN}\n\tExample text in Light Cyan...${NC}\n\t${CYAN}Example query in Cyan?\n\t[y/n]\n${NC}"
 #
 	DOMAIN="Need to complete this with your info"
 	VALUE="Need to complete this with your info"
-	OPTIONS="\n\tUsage-\n${CYAN}This script's main purpose is to scan a single host and report What Groups are allowed to log in via ssh, and then discover What users are in those Groups, and then Discover those users' Real Names. The Secondary use for this script is to discover Either a single User's real name [-i] OR a single User's username based based on the user's Real last name [-n].${NC}\n${RED} You will need to edit this script and change your local Infrastructure's values for Domain, Environment/s, and authentication to the Domain Controller/s.${NC}\n\n\tsyntax =\n   command Name [last-name|uid|${CYAN}file${NC}] UID|Real -[i|n] Environment -[p|s|u] ['Optional hostname']\n[-i]\tUID\t\tUser ID- username\n[-n]\tLast Name\tUser's last name\n[-p]\tEnvironment\tProduction\n[-s]\tEnvironment\tSandbox\n[-u]\tEnvironment\tNon-Prod\n\tExample\t${PURPLE}sh allowedusers.sh smiller -i -p${NC}\n\t\t${PURPLE}sh allowedusers.sh miller -n -p${NC}\n\tUsing the ${CYAN}'file'${NC} option instead of 'user'\n\tREQUIREs a hostname to be scanned like so-\n\t\t ${PURPLE}sh allowedusers.sh${NC} ${CYAN}file${NC} ${PURPLE}-i -p${NC} ${CYAN}<hostname>${NC}\n"
+    OPTIONS="\n\tUsage-\n$(tput setaf 6) This script's main purpose is to scan a single host and report What Groups are allowed to log in via ssh, and then discover What users are in those Groups, and then Discover those users' Real Names. The Secondary use for this script is to discover Either a single User's real name [-i] OR a single User's username based based on the user's Real last name [-n].$(tput sgr 0)\n$(tput setaf 1) You will need to edit this script and change your local Infrastructure's values for Domain, Environment/s, and authentication to the Domain Controller/s.$(tput sgr 0)\n\n\tsyntax =\n   command Name [last-name|uid|$(tput setaf 6)file$(tput sgr 0)] UID|Real -[i|n] Environment -[p|s|u] $(tput setaf 6)['Optional hostname']$(tput sgr 0)\n[-i]\tUID\t\tUser ID- username\n[-n]\tLast Name\tUser's last name\n[-p]\tEnvironment\tProduction\n[-s]\tEnvironment\tSandbox\n[-u]\tEnvironment\tNon-Prod\n\tExample\t$(tput setaf 5)sh allowedusers.sh smiller -i -p$(tput sgr 0)\n\t\t$(tput setaf 5)sh allowedusers.sh miller -n -p$(tput sgr 0)\n\tUsing the $(tput setaf 6)'file'$(tput sgr 0) option instead of 'user'\n\tREQUIREs a hostname to be scanned like so-\n\t\t $(tput setaf 5)sh allowedusers.sh$(tput sgr 0) $(tput setaf 6)file$(tput sgr 0) $(tput setaf 5)-i -p$(tput sgr 0) $(tput setaf 6)<hostname>$(tput sgr 0)\n"
+
 if [ "`echo $1`" == "" ]; then
-        echo -e $OPTIONS | less
+        echo -e $OPTIONS
 	exit 0
 fi
 case "$2" in
@@ -38,7 +21,8 @@ case "$2" in
         NMA=cn
         ;;
 "*")
-	echo -e $OPTIONS | less
+	echo -e $OPTIONS
+	exit 0
         ;;
 esac
 
@@ -53,7 +37,8 @@ case "$3" in
         ENV=$SANDBX.DC.FQDN
         ;;
 "*")
-	echo -e $OPTIONS | less
+	echo -e $OPTIONS
+	exit 0
         ;;
 esac
 if [[ "`echo $1`" != "file" ]]; then
