@@ -54,19 +54,19 @@ $(tput sgr 0)\n"
 	HELP=false
     OPTIONS="\n$(tput setaf 3)Options-Usage:$(tput sgr 0)
     \n\n$(tput setaf 6) $PROGNAME -[OPTION] <Filename>.csv$(tput sgr 0)
-    \n$(tput setaf 3)-Examples:	\n\t\t $PROGNAME -a testreport.csv$(tput sgr 0)
+    \n$(tput setaf 3)-Examples:	\n\t $PROGNAME -a testreport.csv$(tput sgr 0)
     \n\n$(tput setaf 14)-Options:
-	\n[-h]\tHelp\t\t\tShows this list
-	\n[-a]\tAdd Entry\t\tAdd a Bug report 
+	\n[-h]\tHelp\t\tShows this list
+	\n[-a]\tAdd Entry\tAdd a Bug report 
 	\n[-m]\tMail Report\tAdd a Bug report and Email it
-	\n[-o]\tJust Mail\t\tJust Email The Bug report
+	\n[-o]\tJust Mail\tJust Email The Bug report
 	\n[-r]\tRead Report\tTo View the Report in less
 	\n[-e]\tEdit Report\tEdit the Report with vi
 	\n[-v]\tScript Version\tBug-Report Script Version and Release Date
 	\n[-d]\tDescription\tBug-Report Script Description
 	\n[-z]\tShow ChangeLog\tBug-Report Script Change Log
 	\n[-l]\tShow C4 Logo\tDisplays the C4 Logo with Version
-    \n[-g]\tGPL Info\t\tGNU/GPL License Information$(tput sgr 0) \n"
+    \n[-g]\tGPL Info\tGNU/GPL License Information$(tput sgr 0) \n"
 #
 ###################################################
 ###     Check for correct command structure
@@ -141,7 +141,7 @@ function bug_line
 	read CAA
     echo -e "\n\t$(tput setaf 14)Type the Priority...\n[1-5]$(tput sgr 0)"
 	read CAB
-    echo -e "\n\t$(tput setaf 14)Type the Category Type...\n$(tput setaf 4)[c]\tCharacter Creator$(tput sgr 0)\n$(tput setaf 5)[e]\tEnhancement Request$(tput sgr 0)\n$(tput setaf 6)[g]\tGame Play, Movement, Missions$(tput sgr 0)\n[m]\t$(tput setaf 10)Map$(tput sgr 0)\n$(tput setaf 11)[p]\tPowers & Powersets$(tput sgr 0)\n$(tput setaf 12)[u]\tUI & Menus$(tput sgr 0)\n"
+    echo -e "\n\t$(tput setaf 14)Type the Category Type...$(tput sgr 0)\n$(tput setaf 4)[c]\tCharacter Creator$(tput sgr 0)\n$(tput setaf 5)[e]\tEnhancement Request$(tput sgr 0)\n$(tput setaf 6)[g]\tGame Play, Movement, Missions$(tput sgr 0)\n[m]\t$(tput setaf 10)Map$(tput sgr 0)\n$(tput setaf 11)[p]\tPowers & Powersets$(tput sgr 0)\n$(tput setaf 12)[u]\tUI & Menus$(tput sgr 0)\n"
 	read CAC
 	case "$CAC" in
 	"c")
@@ -179,12 +179,12 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
     echo -e "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAG
 	if [ "`echo $CAG`" == "" ]; then
-		CAG=C4
+		CAG=c4
 	else
       echo -e "\n\t$(tput setaf 14)Do you want to set $CAG as the default ID?...\n[y/n]$(tput sgr 0)\n"
 		read DEFID
 		if [ "$DEFID" == "y" ]; then
-			sed -i s/CAG=C4/CAG=$CAG/g $PROGNAME
+			sed -i s/CAG=c4/CAG=$CAG/g $PROGNAME
 		fi
 	fi
     echo -e "\n\t$(tput setaf 14)Type the Date, or leave empty for auto...\n[$JDATE]$(tput sgr 0)\n"
@@ -192,7 +192,7 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 	if [ "`echo $CAH`" == "" ]; then
 		CAH="$JDATE"
 	fi
-    echo -e "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpem (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
+    echo -e "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpen (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
 	read CAI
 	case $CAI in
 	"o")
@@ -218,7 +218,7 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 }
 function display_logo
 {
-echo "" 
+#echo "" 
 echo "$(tput setaf 14)############################################################" #RQH-01
 echo "#.C4.##################################################.C4.#" #RQH-02
 echo "##########******************************####################" #RQH-03
@@ -245,7 +245,7 @@ echo "############  ##########   #####*    |#####|    *###########" #RQH-23
 echo "############  #########  #  ####*    |#####|    *###########" #RQH-24
 echo "#############     ####  ###  ###*---------------*###########" #RQH-25
 echo "#.C4.##################################################.C4.#$(tput sgr 0)" #RQH-26
-echo "" 
+#echo "" 
 }
 #
 ###################################################
@@ -376,13 +376,14 @@ if $DOEDITA; then
 	sed -i s/FROMA=woodbeeco@msn.com/FROMA=$FROMA/g $PROGNAME ; sed -i s/EMAIL=woodbeeco@msn.com/EMAIL=$EMAIL/g $PROGNAME
 fi
 #
-echo -e "\n\n\n\tWhen you open the $2 with your spreadsheet application\n\tuse only the Pound (#) as the deliminator, and as long as you didn't\n\tuse the Pound symbol in any of your inputs it will be fomatted correctly for the official Bug-Report.\n\n\tI hope you find this script useful, and if you have any feedback,
- issues, or requests, please send them to my email in the GPL ($PROGNAME -g)...\n\nThanks,\n\tC4\n"
+echo -e "\n\n\n\t$(tput setaf 6)When you open the $2 with your spreadsheet application\n\tuse only the Pound (#) as the deliminator, and as long as you didn't\n\tuse the Pound symbol in any of your inputs it will be fomatted correctly \n\tfor the official Bug-Report.$(tput sgr 0)"
+echo -e "\t$(tput setaf 4)I hope you find this script useful, and if you have any feedback, issues, or requests, please send them to my email in the GPL [$PROGNAME -g]...\nThanks,$(tput sgr 0)"
+echo -e "\t$(tput setaf 5)C4$(tput sgr 0)"
 #
-echo -e "\n"
-sleep 4
+#echo -e "\n"
+sleep 12
 display_logo
-echo -e "\n"
+#echo -e "\n"
 #
 exit $?
 #
