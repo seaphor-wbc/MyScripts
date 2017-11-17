@@ -5,7 +5,7 @@
 ###################################################################################
 function gpl_info
 {
-echo -e "\n
+  echo -e "\n$(tput setaf 14)
 ####c4#############################################################################
 ###										###
 ##			GNU/GPL Info 						###
@@ -30,7 +30,7 @@ echo -e "\n
 ##		October 24, 2015- For Silverhelm Studios			###
 ##										###
 ####w#################################b######################################c#####
-\n"
+$(tput sgr 0)\n"
 }
 #
 ###################################################
@@ -42,7 +42,7 @@ echo -e "\n
         PCHDAT="14 October, 2017"
 	PROGNAME=$(basename $0)
 	CUSTOM=false
-	USAGE="\n\n$PROGNAME -[OPTION] <filename>.csv \n"
+    USAGE="\n\n$(tput setaf 3) $PROGNAME -[OPTION] <filename>.csv$(tput sgr 0) \n"
 	TDATE=`date +%a\ %b\ %d\ %Y`
 	JDATE=`date +%y%m%d-%H.%M.%S`
 	WDATE="`date +%U\ %Y`"
@@ -52,10 +52,10 @@ echo -e "\n
 ###################################################
 #
 	HELP=false
-	OPTIONS="\nOptions-Usage:
-	\n\n $PROGNAME -[OPTION] <Filename>.csv
-	\n-Examples:	\n\t\t $PROGNAME -a testreport.csv
-	\n\n-Options:
+    OPTIONS="\n$(tput setaf 3)Options-Usage:$(tput sgr 0)
+    \n\n$(tput setaf 6) $PROGNAME -[OPTION] <Filename>.csv$(tput sgr 0)
+    \n$(tput setaf 3)-Examples:	\n\t\t $PROGNAME -a testreport.csv$(tput sgr 0)
+    \n\n$(tput setaf 14)-Options:
 	\n[-h]\tHelp\t\t\tShows this list
 	\n[-a]\tAdd Entry\t\tAdd a Bug report 
 	\n[-m]\tMail Report\tAdd a Bug report and Email it
@@ -66,7 +66,7 @@ echo -e "\n
 	\n[-d]\tDescription\tBug-Report Script Description
 	\n[-z]\tShow ChangeLog\tBug-Report Script Change Log
 	\n[-l]\tShow C4 Logo\tDisplays the C4 Logo with Version
-	\n[-g]\tGPL Info\t\tGNU/GPL License Information \n"
+    \n[-g]\tGPL Info\t\tGNU/GPL License Information$(tput sgr 0) \n"
 #
 ###################################################
 ###     Check for correct command structure
@@ -77,7 +77,7 @@ if [[ "`ls ~/bin/ | grep $PROGNAME`" == "" ]]; then
 	if [[ -a $PWD/$PROGNAME ]]; then
 		cp $PROGNAME ~/bin/$PROGNAME
 	else
-		echo -e "\n\tRun this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...\n"
+      echo -e "\n\t$(tput setaf 3)Run this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...$(tput sgr 0)\n"
 		exit $?
 	fi
 fi
@@ -123,7 +123,7 @@ fi
 #
 function bug_more
 {
-	echo -e "\n\t Do you want to enter bug report? ....\n [y/n]"
+  echo -e "\n\t$(tput setaf 3) Do you want to enter bug report? ....\n [y/n]$(tput sgr 0)"
 	read MRBUGZ
 	if [ "`echo $MRBUGZ`" == "y" ]; then
 		MOBUGZ=true
@@ -135,13 +135,13 @@ function bug_more
 #
 function bug_line
 {
-        echo -e "\n\n\t Do *NOT* use a '#' symobol in any of the input... it is the CSV Deliminator"
+  echo -e "\n\n\t$(tput setaf 3) Do *NOT* use a '#' symobol in any of the input... it is the CSV Deliminator$(tput sgr 0)"
         sleep 4
-	echo -e "\n\tType the Release Version..."
+        echo -e "\n\t$(tput setaf 14)Type the Release Version...$(tput sgr 0)"
 	read CAA
-	echo -e "\n\tType the Priority...\n[1-5]"
+    echo -e "\n\t$(tput setaf 14)Type the Priority...\n[1-5]$(tput sgr 0)"
 	read CAB
-	echo -e "\n\tType the Category Type...\n[c]\tCharacter Creator\n[e]\tEnhancement Request\n[g]\tGame Play, Movement, Missions\n[m]\tMap\n[p]\tPowers & Powersets\n[u]\tUI & Menus\n"
+    echo -e "\n\t$(tput setaf 14)Type the Category Type...\n$(tput setaf 4)[c]\tCharacter Creator$(tput sgr 0)\n$(tput setaf 5)[e]\tEnhancement Request$(tput sgr 0)\n$(tput setaf 6)[g]\tGame Play, Movement, Missions$(tput sgr 0)\n[m]\t$(tput setaf 10)Map$(tput sgr 0)\n$(tput setaf 11)[p]\tPowers & Powersets$(tput sgr 0)\n$(tput setaf 12)[u]\tUI & Menus$(tput sgr 0)\n"
 	read CAC
 	case "$CAC" in
 	"c")
@@ -170,29 +170,29 @@ function bug_line
 		;;
 	esac
 #
-	echo -e "\n\tType the Short Description..."
+echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 	read CAD
-	echo -e "\n\tType the Details- Long Description..."
+    echo -e "\n\t$(tput setaf 14)Type the Details- Long Description...$(tput sgr 0)"
 	read CAE
-	echo -e "\n\tType the STR & Additional Notes..."
+    echo -e "\n\t$(tput setaf 14)Type the STR & Additional Notes...$(tput sgr 0)"
 	read CAF
-	echo -e "\n\tType the Identified By...\n[Leave Blank for $CAG]\n"
+    echo -e "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAG
 	if [ "`echo $CAG`" == "" ]; then
 		CAG=C4
 	else
-		echo -e "\n\tDo you want to set $CAG as the default ID?...\n[y/n]\n"
+      echo -e "\n\t$(tput setaf 14)Do you want to set $CAG as the default ID?...\n[y/n]$(tput sgr 0)\n"
 		read DEFID
 		if [ "$DEFID" == "y" ]; then
 			sed -i s/CAG=C4/CAG=$CAG/g $PROGNAME
 		fi
 	fi
-	echo -e "\n\tType the Date, or leave empty for auto...\n[$JDATE]\n"
+    echo -e "\n\t$(tput setaf 14)Type the Date, or leave empty for auto...\n[$JDATE]$(tput sgr 0)\n"
 	read CAH
 	if [ "`echo $CAH`" == "" ]; then
 		CAH="$JDATE"
 	fi
-	echo -e "\n\tType the Status...\n[o]\tOpem (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]\n"
+    echo -e "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpem (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
 	read CAI
 	case $CAI in
 	"o")
@@ -219,7 +219,7 @@ function bug_line
 function display_logo
 {
 echo "" 
-echo "############################################################" #RQH-01
+echo "$(tput setaf 14)############################################################" #RQH-01
 echo "#.C4.##################################################.C4.#" #RQH-02
 echo "##########******************************####################" #RQH-03
 echo "########*                                *##################" #RQH-04
@@ -244,7 +244,7 @@ echo "############  #########  #  ####*    |#####|    *###########" #RQH-22
 echo "############  ##########   #####*    |#####|    *###########" #RQH-23
 echo "############  #########  #  ####*    |#####|    *###########" #RQH-24
 echo "#############     ####  ###  ###*---------------*###########" #RQH-25
-echo "#.C4.##################################################.C4.#" #RQH-26
+echo "#.C4.##################################################.C4.#$(tput sgr 0)" #RQH-26
 echo "" 
 }
 #
