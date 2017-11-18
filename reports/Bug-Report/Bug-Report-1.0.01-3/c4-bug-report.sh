@@ -37,8 +37,8 @@ $(tput sgr 0)\n"
 ###	Define Standard Variables	###
 ###################################################
 #
-        JVER="Bug-Report-1.0.01-2"
-        PCHLVL="1.0.01-2"
+        JVER="Bug-Report-1.0.01-3"
+        PCHLVL="1.0.01-3"
         PCHDAT="18 November, 2017"
 	PROGNAME=$(basename $0)
 	CUSTOM=false
@@ -478,5 +478,7 @@ exit $?
 ##@		variables and then will work for any project
 ##@		Fixed CAG variable set to c4 from testing
 ##@		Fixed static variable from testing
+##@	Patch-Level-1.0.01-3  "18 November, 2017"
+##@		Promoted due to static variable from testing
 ##@		
 ##@		
