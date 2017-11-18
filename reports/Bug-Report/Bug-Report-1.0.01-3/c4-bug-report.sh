@@ -5,7 +5,8 @@
 ###################################################################################
 function gpl_info
 {
-  echo -e "\n$(tput setaf 14)
+  #echo -e "\n$(tput setaf 14)
+  printf "\n$(tput setaf 14)
 ####c4#############################################################################
 ###										###
 ##			GNU/GPL Info 						###
@@ -85,13 +86,12 @@ esac
 ###	Set Script Variables
 ###################################################
 #
-if [[ "`ls ~/bin/ | grep $PROGNAME`" == "" ]]; then
-	if [[ -a $PWD/$PROGNAME ]]; then
-		cp $PROGNAME ~/bin/$PROGNAME
-	else
-      echo -e "\n\t$(tput setaf 3)Run this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...$(tput sgr 0)\n"
-		exit $?
-	fi
+if [[ ! -L ~/bin/$PROGNAME ]]; then
+	#echo -e "\n\t$(tput setaf 3)Run this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 3)It is recommended that you clone the github repo so that you can have the Latest up-to-date stable release, and then put a sym-link in ~/bin/ pointing to ~/My_Scripts/reports/Bug-Report/Latest_Stable/$PROGNAME...$(tput sgr 0)\n"
+fi
+if ! $NOSLEEP; then
+	sleep 2
 fi
 #	Variables
 	JSLOC=~/bin/$PROGNAME
@@ -127,7 +127,8 @@ if [ -a $REPDIR/$2 ]; then
 else
 	touch $REPDIR/$2
 	BREPRT=$REPDIR/$2
-	echo -e "\n $CHA#$CHB#$CHC#$CHD#$CHE#$CHF#$CHG#$CHH#$CHI" > $BREPRT 
+	printf "\n $CHA#$CHB#$CHC#$CHD#$CHE#$CHF#$CHG#$CHH#$CHI" > $BREPRT 
+	#echo -e "\n $CHA#$CHB#$CHC#$CHD#$CHE#$CHF#$CHG#$CHH#$CHI" > $BREPRT 
 fi
 #
 ###################################################
@@ -136,7 +137,7 @@ fi
 #
 function bug_more
 {
-  echo -e "\n\t$(tput setaf 3) Do you want to enter bug report? ....\n [y/n]$(tput sgr 0)"
+  printf "\n\t$(tput setaf 3) Do you want to enter bug report? ....\n [y/n]$(tput sgr 0)"
 	read MRBUGZ
 	if [ "`echo $MRBUGZ`" == "y" ]; then
 		MOBUGZ=true
@@ -148,13 +149,13 @@ function bug_more
 #
 function bug_line
 {
-  echo -e "\n\n\t$(tput setaf 3) Do *NOT* use a '#' symobol in any of the input... it is the CSV Deliminator$(tput sgr 0)"
-        sleep 2
-        echo -e "\n\t$(tput setaf 14)Type the Release Version...$(tput sgr 0)"
+	printf "\n\n\t$(tput setaf 3) Do *NOT* use a '#' symobol in any of the input... it is the CSV Deliminator$(tput sgr 0)"
+sleep 2
+	printf "\n\t$(tput setaf 14)Type the Release Version...$(tput sgr 0)"
 	read CAA
-    echo -e "\n\t$(tput setaf 14)Type the Priority...\n[1-5]$(tput sgr 0)"
+	printf "\n\t$(tput setaf 14)Type the Priority...\n[1-5]$(tput sgr 0)"
 	read CAB
-    echo -e "\n\t$(tput setaf 14)Category Type...$(tput sgr 0)\n$(tput setaf 4)[c]\tCharacter Creator$(tput sgr 0)\n$(tput setaf 5)[e]\tEnhancement Request$(tput sgr 0)\n$(tput setaf 6)[g]\tGame Play, Movement, Missions$(tput sgr 0)\n[m]\t$(tput setaf 10)Map$(tput sgr 0)\n$(tput setaf 11)[p]\tPowers & Powersets$(tput sgr 0)\n$(tput setaf 12)[u]\tUI & Menus$(tput sgr 0)\n$(tput setaf 1)[s]\tBug, issue, or enhancement request with this script$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 14)Category Type...$(tput sgr 0)\n$(tput setaf 4)[c]\tCharacter Creator$(tput sgr 0)\n$(tput setaf 5)[e]\tEnhancement Request$(tput sgr 0)\n$(tput setaf 6)[g]\tGame Play, Movement, Missions$(tput sgr 0)\n[m]\t$(tput setaf 10)Map$(tput sgr 0)\n$(tput setaf 11)[p]\tPowers & Powersets$(tput sgr 0)\n$(tput setaf 12)[u]\tUI & Menus$(tput sgr 0)\n$(tput setaf 1)[s]\tBug, issue, or enhancement request with this script$(tput sgr 0)\n"
 	read CAC
 	case "$CAC" in
 	"c")
@@ -183,26 +184,26 @@ function bug_line
 		;;
 	esac
 #
-echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
+	printf "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 	read CAD
-    echo -e "\n\t$(tput setaf 14)Type the Details- Long Description...$(tput sgr 0)"
+	printf "\n\t$(tput setaf 14)Type the Details- Long Description...$(tput sgr 0)"
 	read CAE
-    echo -e "\n\t$(tput setaf 14)Type the STR & Additional Notes...$(tput sgr 0)"
+	printf "\n\t$(tput setaf 14)Type the STR & Additional Notes...$(tput sgr 0)"
 	read CAF
 	CAG=false
-    echo -e "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAGA
 	if [ "`echo $CAGA`" != "" ]; then
 		CAG=$CAGA
-		echo -e "\n\t$(tput setaf 14)Do you want to set $CAGA as the default ID?...\n[y/n]$(tput sgr 0)\n"
+		printf "\n\t$(tput setaf 14)Do you want to set $CAGA as the default ID?...\n[y/n]$(tput sgr 0)\n"
 		read DEFID
 	fi
-    echo -e "\n\t$(tput setaf 14)Type the Date, or leave empty for auto...\n[$JDATE]$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 14)Type the Date, or leave empty for auto...\n[$JDATE]$(tput sgr 0)\n"
 	read CAH
 	if [ "`echo $CAH`" == "" ]; then
 		CAH="$JDATE"
 	fi
-    echo -e "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpen (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpen (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
 	read CAI
 	case $CAI in
 	"o")
@@ -222,7 +223,7 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 		;;
 	esac
 #
-	echo -e "$CAA#$CAB#$CAC#$CAD#$CAE#$CAF#$CAG#$CAH#$CAI" >> $BREPRT 
+	printf "$CAA#$CAB#$CAC#$CAD#$CAE#$CAF#$CAG#$CAH#$CAI" >> $BREPRT 
 	unset -f {CAA,CAB,CAC,CAD,CAE,CAF,CAGA,CAH,CAI} 2>&1 > /dev/null
 	if [[ "$DEFID" == "y" ]]; then
 		sed -i s/CAG\=false/CAG\=$CAG/g $PROGNAME
@@ -233,32 +234,30 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 }
 function display_logo
 {
-echo "$(tput setaf 14)############################################################" #RQH-01
-echo "#.C4.##################################################.C4.#" #RQH-02
-echo "##########******************************####################" #RQH-03
-echo "########*                                *##################" #RQH-04
-echo "######*       @######################|   *##################" #RQH-05
-echo "#####*     @#########################|    *#################" #RQH-06
-echo "####*     @##########################|_____    *############" #RQH-07
-echo "###*     @#####|                     |#####|    *###########" #RQH-08
-echo "###*     @#####|                     |#####|    *###########" #RQH-09
-echo "###*     @#####|      OFFICIAL       |#####|    *###########" #RQH-10
-echo "###*     @#####| $JVER |#####|    *###########" #RQH-11
-echo "###*     @#####|      RELEASE        |#####|    *###########" #RQH-12
-echo "###*     @#####|                     |#####|    *###########" #RQH-13
-echo "###*     @#####|_____________________|#####|_______    *####" #RQH-14
-echo "###*      @########################################|   *####" #RQH-15
-echo "####*      @#######################################|   *####" #RQH-16
-echo "#####*       @#####################################|   *####" #RQH-17
-echo "######*                              |#####|           *####" #RQH-18
-echo "################################*    |#####|    *###########" #RQH-19
-echo "################################*    |#####|    *###########" #RQH-20
-echo "#############     ####  ###  ###*    |#####|    *###########" #RQH-21
-echo "############  #########  #  ####*    |#####|    *###########" #RQH-22
-echo "############  ##########   #####*    |#####|    *###########" #RQH-23
-echo "############  #########  #  ####*    |#####|    *###########" #RQH-24
-echo "#############     ####  ###  ###*---------------*###########" #RQH-25
-echo "#.C4.##################################################.C4.#$(tput sgr 0)" #RQH-26
+printf "$(tput setaf 14)############################################################" #RQH-01
+printf "#.C4.##################################################.C4.#" #RQH-02
+printf "##########******************************####################" #RQH-03
+printf "########*                                *##################" #RQH-04
+printf "######*       @######################|   *##################" #RQH-05
+printf "#####*     @#########################|    *#################" #RQH-06
+printf "####*     @##########################|_____    *############" #RQH-07
+printf "###*     @#####|                     |#####|    *###########" #RQH-08
+printf "###*     @#####|                     |#####|    *###########" #RQH-09
+printf "###*     @#####|      OFFICIAL       |#####|    *###########" #RQH-10
+printf "###*     @#####| $JVER |#####|    *###########" #RQH-11
+printf "###*     @#####|      RELEASE        |#####|    *###########" #RQH-12
+printf "###*     @#####|                     |#####|    *###########" #RQH-13
+printf "###*     @#####|_____________________|#####|_______    *####" #RQH-14
+printf "###*      @########################################|   *####" #RQH-15
+printf "####*      @#######################################|   *####" #RQH-16
+printf "#####*       @#####################################|   *####" #RQH-17
+printf "######*                              |#####|           *####" #RQH-18
+printf "################################*    |#####|    *###########" #RQH-19
+printf "################################*    |#####|    *###########" #RQH-20
+printf "#############     ####  ###  ###*    |#####|    *###########" #RQH-21
+printf "############  #########  #  ####*    |#####|    *###########" #RQH-24
+printf "#############     ####  ###  ###*---------------*###########" #RQH-25
+printf "#.C4.##################################################.C4.#$(tput sgr 0)" #RQH-26
 }
 #
 ###################################################
@@ -322,13 +321,13 @@ case "$1" in
     ;;
 "-d")
     clear
-    echo -e $DESCRIPT
+    printf $DESCRIPT
     exit $?
     ;;
 *)
 	clear
-	echo -e $OPTIONS
-	echo $PROGNAME
+	printf $OPTIONS
+	printf $PROGNAME
 	exit $?
 	;;
 esac
@@ -403,9 +402,9 @@ if $DOEDITA; then
 	sed -i s/FROMA\=false/FROMA\=$FROMA/g $PROGNAME ; sed -i s/EMAIL\=false/EMAIL\=$EMAIL/g $PROGNAME
 fi
 #
-echo -e "\n\n\n\t$(tput setaf 6)When you open the $2 with your spreadsheet application\n\tuse only the Pound (#) as the deliminator, and as long as you didn't\n\tuse the Pound symbol in any of your inputs it will be fomatted correctly \n\tfor the official Bug-Report.$(tput sgr 0)"
-echo -e "\t$(tput setaf 4)I hope you find this script useful, and if you have any feedback, issues, or requests, please send them to my email in the GPL [$PROGNAME -g]...\nThanks,$(tput sgr 0)"
-echo -e "\t$(tput setaf 5)C4$(tput sgr 0)"
+printf "\n\n\n\t$(tput setaf 6)When you open the $2 with your spreadsheet application\n\tuse only the Pound (#) as the deliminator, and as long as you didn't\n\tuse the Pound symbol in any of your inputs it will be fomatted correctly \n\tfor the official Bug-Report.$(tput sgr 0)"
+printf "\t$(tput setaf 4)I hope you find this script useful, and if you have any feedback, issues, or requests, please send them to my email in the GPL [$PROGNAME -g]...\nThanks,$(tput sgr 0)"
+printf "\t$(tput setaf 5)C4$(tput sgr 0)"
 #
 if ! $NOSLEEP; then
 	sleep 12
@@ -480,5 +479,12 @@ exit $?
 ##@		Fixed static variable from testing
 ##@	Patch-Level-1.0.01-3  "18 November, 2017"
 ##@		Promoted due to static variable from testing
+##@		Now... Beginning work to variale-ize all the fields
+##@		for use in any QA team to be able to just edit the 
+##@		variables and then will work for any project
+##@		also- Goal to change all echo statements to printf- all but mail, I think
+##@		Removed the cp to the user's bin dir and echo'd the github repo
+##@		with a sym-link in the user's bin dir
+##@		
 ##@		
 ##@		
