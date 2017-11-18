@@ -277,8 +277,13 @@ case "$1" in
         fi
         ;;
 "-r")
-	cat $BREPRT | sed 's/#/\t/g' | less
-	exit $?
+	if [[ "`echo $2`" == "" ]]; then
+		printf "\n$(tput setaf 1)The -r Option requires You must provide the filename$(tput sgr 0)\n\t$(tput setaf 3)$PROGNAME -r testreport.csv$(tput sgr 0)\n"
+		exit $?
+	else
+		cat $BREPRT | sed 's/#/\t/g' | less
+		exit $?
+	fi
 	;;
 "-z")
 	grep '##@' $JSLOC | grep -v JSLOC
@@ -469,4 +474,7 @@ exit $?
 ##@		Added colors to request for input
 ##@		Added -V option to ignore sleeps/pauses
 ##@		Added -d option for Description
+##@		Fixed -r option with check for $2 filename
+##@		
+##@		
 ##@		
