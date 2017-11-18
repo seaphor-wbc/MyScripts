@@ -189,7 +189,7 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 	read CAE
     echo -e "\n\t$(tput setaf 14)Type the STR & Additional Notes...$(tput sgr 0)"
 	read CAF
-	CAG=C4
+	CAG=false
     echo -e "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAGA
 #	if [ "`echo $CAG`" == "" ]; then
@@ -351,8 +351,8 @@ if $RMAIL; then
                 read EMAIL
 	fi
 	if [ "$TOFROM" == "d" ]; then
-		FROMA=woodbeeco@msn.com
-		EMAIL=woodbeeco@msn.com
+		FROMA=false
+		EMAIL=false
 		if [ "`echo $FROMA`" == "false" ]; then
 			echo -e "\n\tYour 'Default' emails have not been set, \n\tafter this instance has exited either manually edit the script Mail settings\n\tor edit the following command with your info (remove all '<>' and edit its contents)-\n\nexport FROMA=<yourdefault_FROM_emsiladdress>\nexport EMAIL=<yourdefault_TO_emsiladdress>\nsed -i s/FROMA=<false>/FROMA=$FROMA/g $PROGNAME\nsed -i s/EMAIL=<false>/EMAIL=$EMAIL/g $PROGNAME \n"
 			sleep 2
@@ -402,7 +402,7 @@ fi
 ###
 #
 if $DOEDITA; then
-	sed -i s/FROMA=woodbeeco@msn.com/FROMA=$FROMA/g $PROGNAME ; sed -i s/EMAIL=woodbeeco@msn.com/EMAIL=$EMAIL/g $PROGNAME
+	sed -i s/FROMA\=false/FROMA\=$FROMA/g $PROGNAME ; sed -i s/EMAIL\=false/EMAIL\=$EMAIL/g $PROGNAME
 fi
 #
 echo -e "\n\n\n\t$(tput setaf 6)When you open the $2 with your spreadsheet application\n\tuse only the Pound (#) as the deliminator, and as long as you didn't\n\tuse the Pound symbol in any of your inputs it will be fomatted correctly \n\tfor the official Bug-Report.$(tput sgr 0)"
@@ -475,6 +475,7 @@ exit $?
 ##@		Added -V option to ignore sleeps/pauses
 ##@		Added -d option for Description
 ##@		Fixed -r option with check for $2 filename
+##@		Fixed static variable from testing
 ##@		
 ##@		
 ##@		

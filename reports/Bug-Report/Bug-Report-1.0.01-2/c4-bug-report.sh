@@ -37,8 +37,8 @@ $(tput sgr 0)\n"
 ###	Define Standard Variables	###
 ###################################################
 #
-        JVER="Bug-Report-1.0.01-1"
-        PCHLVL="1.0.01-1"
+        JVER="Bug-Report-1.0.01-2"
+        PCHLVL="1.0.01-2"
         PCHDAT="18 November, 2017"
 	PROGNAME=$(basename $0)
 	CUSTOM=false
@@ -192,10 +192,8 @@ echo -e "\n\t$(tput setaf 14)Type the Short Description...$(tput sgr 0)"
 	CAG=false
     echo -e "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAGA
-#	if [ "`echo $CAG`" == "" ]; then
 	if [ "`echo $CAGA`" != "" ]; then
 		CAG=$CAGA
-#	else
 		echo -e "\n\t$(tput setaf 14)Do you want to set $CAGA as the default ID?...\n[y/n]$(tput sgr 0)\n"
 		read DEFID
 	fi
@@ -409,12 +407,10 @@ echo -e "\n\n\n\t$(tput setaf 6)When you open the $2 with your spreadsheet appli
 echo -e "\t$(tput setaf 4)I hope you find this script useful, and if you have any feedback, issues, or requests, please send them to my email in the GPL [$PROGNAME -g]...\nThanks,$(tput sgr 0)"
 echo -e "\t$(tput setaf 5)C4$(tput sgr 0)"
 #
-#echo -e "\n"
 if ! $NOSLEEP; then
 	sleep 12
 fi
 display_logo
-#echo -e "\n"
 #
 exit $?
 #
@@ -468,14 +464,19 @@ exit $?
 ##@	  	Added 's' Category Option for script bug
 ##@		fixed redundant check for sript path
 ##@		general cleanup
-##@	Patch-Level-1.0.01-1  PCHDAT="14 October, 2017"
+##@	Patch-Level-1.0.01-1  PCHDAT="19 November, 2017"
 ##@		Fixed annoying unset issue with 'not a valid identifier'
 ##@		Fixed logic for 'Default id'
 ##@		Added colors to request for input
 ##@		Added -V option to ignore sleeps/pauses
 ##@		Added -d option for Description
 ##@		Fixed -r option with check for $2 filename
+##@	Patch-Level-1.0.01-2  "18 November, 2017"
+##@		remove PCHDAT= from Changelog
+##@		Beginning work to variale-ize all the fields
+##@		for use in any QA team to be able to just edit the 
+##@		variables and then will work for any project
+##@		Fixed CAG variable set to c4 from testing
 ##@		Fixed static variable from testing
-##@		
 ##@		
 ##@		
