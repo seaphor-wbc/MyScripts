@@ -88,7 +88,7 @@ esac
 #
 if [[ ! -L ~/bin/$PROGNAME ]]; then
 	#echo -e "\n\t$(tput setaf 3)Run this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...$(tput sgr 0)\n"
-	printf "\n\t$(tput setaf 3)It is recommended that you clone the github repo so that you can have the Latest up-to-date stable release, and then put a sym-link in ~/bin/ pointing to ~/My_Scripts/reports/Bug-Report/Latest_Stable/$PROGNAME...$(tput sgr 0)\n"
+	printf "\n\t$(tput setaf 3)It is recommended that you clone the github repo so that you can have the Latest up-to-date stable release, and then put a sym-link in ~/bin/ pointing to ~/MyScripts/reports/Bug-Report/Latest_Stable/$PROGNAME...$(tput sgr 0)\n"
 fi
 if ! $NOSLEEP; then
 	sleep 2
