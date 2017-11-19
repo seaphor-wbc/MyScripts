@@ -1,11 +1,10 @@
 #!/bin/bash
-
+#
 ###################################################################################
 #####			GNU/GPL Info						###
 ###################################################################################
 function gpl_info
 {
-  #echo -e "\n$(tput setaf 14)
   printf "\n$(tput setaf 14)
 ####c4#############################################################################
 ###										###
@@ -35,18 +34,25 @@ $(tput sgr 0)\n"
 }
 #
 ###################################################
-###	Define Standard Variables	###
+###	Define Standard Variables		###
 ###################################################
-#
+#	Global Variables
         JVER="Bug-Report-1.0.01-3"
         PCHLVL="1.0.01-3"
-        PCHDAT="18 November, 2017"
+        PCHDAT="19 November, 2017"
 	PROGNAME=$(basename $0)
 	CUSTOM=false
-    USAGE="\n\n$(tput setaf 3) $PROGNAME -[OPTION] <filename>.csv$(tput sgr 0) \n"
+	USAGE="\n\n$(tput setaf 3) $PROGNAME -[OPTION] <filename>.csv$(tput sgr 0) \n"
 	TDATE=`date +%a\ %b\ %d\ %Y`
 	JDATE=`date +%y%m%d-%H.%M.%S`
 	WDATE="`date +%U\ %Y`"
+#	Script Variables
+	JSLOC=~/bin/$PROGNAME
+	MOBUGZ=false
+	RPDEF=false
+	RPCUST=false
+	RMAIL=false
+	JMAIL=false
 case $3 in
 	"-V")
 		NOSLEEP=true
@@ -83,23 +89,16 @@ esac
 #
 ###################################################
 ###     Check for correct command structure
-###	Set Script Variables
+###	Set Report Variables
 ###################################################
 #
 if [[ ! -L ~/bin/$PROGNAME ]]; then
-	#echo -e "\n\t$(tput setaf 3)Run this script from the directory it's in the first time\n\tDoing so will copy it to your ~/bin/ directory\n\tand then you can run it from anywhere... exiting...$(tput sgr 0)\n"
 	printf "\n\t$(tput setaf 3)It is recommended that you clone the github repo so that you can have the Latest up-to-date stable release, and then put a sym-link in ~/bin/ pointing to ~/MyScripts/reports/Bug-Report/Latest_Stable/$PROGNAME...$(tput sgr 0)\n"
 fi
 if ! $NOSLEEP; then
 	sleep 2
 fi
-#	Variables
-	JSLOC=~/bin/$PROGNAME
-	MOBUGZ=false
-	RPDEF=false
-	RPCUST=false
-	RMAIL=false
-	JMAIL=false
+#	Report Variables
 	CHA="Release Vs."
 	CHB="Priority"
 	CHC="Category/Type"
@@ -115,20 +114,19 @@ fi
 ###	PATH Directory
 ###################################################
 #
-if [ ! -d ~/.Per ]; then
+if [[ ! -d ~/.Per ]]; then
 	mkdir ~/.Per 2> /dev/null
 	REPDIR=~/.Per
 else
 	REPDIR=~/.Per
 fi
 #
-if [ -a $REPDIR/$2 ]; then
+if [[ -a $REPDIR/$2 ]]; then
 	BREPRT=$REPDIR/$2
 else
 	touch $REPDIR/$2
 	BREPRT=$REPDIR/$2
 	printf "\n $CHA#$CHB#$CHC#$CHD#$CHE#$CHF#$CHG#$CHH#$CHI" > $BREPRT 
-	#echo -e "\n $CHA#$CHB#$CHC#$CHD#$CHE#$CHF#$CHG#$CHH#$CHI" > $BREPRT 
 fi
 #
 ###################################################
@@ -137,9 +135,9 @@ fi
 #
 function bug_more
 {
-  printf "\n\t$(tput setaf 3) Do you want to enter bug report? ....\n [y/n]$(tput sgr 0)"
+  printf "\n\t$(tput setaf 3) Do you want to enter another bug report? ....\n [y/n]$(tput sgr 0)"
 	read MRBUGZ
-	if [ "`echo $MRBUGZ`" == "y" ]; then
+	if [[ "`echo $MRBUGZ`" == "y" ]]; then
 		MOBUGZ=true
 		bug_line
 	else
@@ -193,14 +191,14 @@ sleep 2
 	CAG=false
 	printf "\n\t$(tput setaf 14)Type the Identified By...\n[Leave Blank for $CAG]$(tput sgr 0)\n"
 	read CAGA
-	if [ "`echo $CAGA`" != "" ]; then
+	if [[ "`echo $CAGA`" != "" ]]; then
 		CAG=$CAGA
 		printf "\n\t$(tput setaf 14)Do you want to set $CAGA as the default ID?...\n[y/n]$(tput sgr 0)\n"
 		read DEFID
 	fi
 	printf "\n\t$(tput setaf 14)Type the Date, or leave empty for auto...\n[$JDATE]$(tput sgr 0)\n"
 	read CAH
-	if [ "`echo $CAH`" == "" ]; then
+	if [[ "`echo $CAH`" == "" ]]; then
 		CAH="$JDATE"
 	fi
 	printf "\n\t$(tput setaf 14)Type the Status...\n[o]\tOpen (Default)\n[c]\tClosed\n[f]\tFixed\n[r]\tRetest\n[Open]$(tput sgr 0)\n"
@@ -341,21 +339,21 @@ esac
 if $RMAIL; then
 	echo -e "\n\t Do you want Default to/from or Custom? \n [d/c]"
 	read TOFROM
-	if [ "$TOFROM" == "c" ]; then
+	if [[ "$TOFROM" == "c" ]]; then
 		echo -e "\n\tType the FROM email address..."
 		read FROMA
 		echo -e "\n\tType the TO email address..."
                 read EMAIL
 	fi
-	if [ "$TOFROM" == "d" ]; then
+	if [[ "$TOFROM" == "d" ]]; then
 		FROMA=false
 		EMAIL=false
-		if [ "`echo $FROMA`" == "false" ]; then
+		if [[ "`echo $FROMA`" == "false" ]]; then
 			echo -e "\n\tYour 'Default' emails have not been set, \n\tafter this instance has exited either manually edit the script Mail settings\n\tor edit the following command with your info (remove all '<>' and edit its contents)-\n\nexport FROMA=<yourdefault_FROM_emsiladdress>\nexport EMAIL=<yourdefault_TO_emsiladdress>\nsed -i s/FROMA=<false>/FROMA=$FROMA/g $PROGNAME\nsed -i s/EMAIL=<false>/EMAIL=$EMAIL/g $PROGNAME \n"
 			sleep 2
 			echo -e "\n\n\t Do you want this script to add the entries for you when its finished?\n [y/n]"
 			read DOEDIT
-			if [ "$DOEDIT" == "y" ]; then
+			if [[ "$DOEDIT" == "y" ]]; then
 				DOEDITA=true
 			fi
 			if ! $NOSLEEP; then
@@ -371,13 +369,13 @@ if $RMAIL; then
 	read SUBJECT
 	echo -e "\n\tDo you want to type the body of the email? [a]\n\tOr, Do you already have a file that you want to cat for the body of the email? [b]\n\nEnter your choice [a/b]... "
 	read BDYCHSE
-	if [ "$BDYCHSE" == "b" ]; then
+	if [[ "$BDYCHSE" == "b" ]]; then
 		echo -e "\n\tType the exact absolute path to the file to be used for the body of the email..."
 		read CATFILE
 		EMAILMESSAGEZ=$REPDIR/mailmsg
 		cat $CATFILE > $EMAILMESSAGEZ
 	fi
-	if [ "$BDYCHSE" == "a" ]; then
+	if [[ "$BDYCHSE" == "a" ]]; then
 		echo -e "\n\tBegin Typing the body now, a RETURN will end the input of the text-body..."
 		read CATFILE
 		EMAILMESSAGEZ=$REPDIR/mailmsg
@@ -485,6 +483,9 @@ exit $?
 ##@		also- Goal to change all echo statements to printf- all but mail, I think
 ##@		Removed the cp to the user's bin dir and echo'd the github repo
 ##@		with a sym-link in the user's bin dir
+##@		Changed all [single brackets] to [[double brackets]] according to standards
+##@		Added the word 'another' to the bug_more function user input request
+##@		
 ##@		
 ##@		
 ##@		
