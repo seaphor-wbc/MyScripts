@@ -37,8 +37,8 @@ $(tput sgr 0)\n"
 ###	Define Standard Variables		###
 ###################################################
 #	Global Variables
-        JVER="Bug-Report-1.0.01-3"
-        PCHLVL="1.0.01-3"
+        JVER="Bug-Report-1.0.01-4"
+        PCHLVL="1.0.01-4"
         PCHDAT="19 November, 2017"
 	PROGNAME=$(basename $0)
 	CUSTOM=false
@@ -491,4 +491,8 @@ exit $?
 ##@		Fixed typo in Description
 ##@		Added newlines to all requests for input that cause the input to be on same 
 ##@		-line as the request
+##@	Patch-Level-1.0.01-4  "19 November, 2017"
+##@		
+##@		
+##@		
 ##@		
